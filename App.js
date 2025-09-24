@@ -1,127 +1,172 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  Dimensions,
   Alert,
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
-const { width } = Dimensions.get("window");
+  ScrollView,
+} from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
   const [calories, setCalories] = useState(0);
   const [protein, setProtein] = useState(0);
-  const [history, setHistory] = useState([]);
+  const [creatineTaken, setCreatineTaken] = useState(false);
+  const [fishOilTaken, setFishOilTaken] = useState(false);
 
-  const addValues = () => {
+  const addCalories = () => {
     Alert.prompt(
-      "Add Food",
-      "Enter calories and protein values",
+      'Add Calories',
+      'Enter the amount to add',
       [
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Add",
-          onPress: (input) => {
-            if (input) {
-              const values = input.split(",");
-              if (values.length === 2) {
-                const caloriesValue = parseInt(values[0].trim()) || 0;
-                const proteinValue = parseInt(values[1].trim()) || 0;
-
-                // Save current state to history for undo
-                setHistory([...history, { calories, protein }]);
-
-                // Update values
-                setCalories(calories + caloriesValue);
-                setProtein(protein + proteinValue);
-              } else {
-                Alert.alert(
-                  "Error",
-                  "Please enter values as: calories, protein (e.g., 200, 15)"
-                );
-              }
+          text: 'Add',
+          onPress: (value) => {
+            const amount = parseInt(value) || 0;
+            if (amount > 0) {
+              setCalories(prev => prev + amount);
             }
-          },
-        },
+          }
+        }
       ],
-      "plain-text",
-      "calories, protein (e.g., 200, 15)"
+      'plain-text',
+      '',
+      'number-pad'
     );
   };
 
-  const undoLastEntry = () => {
-    if (history.length > 0) {
-      const lastState = history[history.length - 1];
-      setCalories(lastState.calories);
-      setProtein(lastState.protein);
-      setHistory(history.slice(0, -1));
-    } else {
-      Alert.alert("Nothing to undo", "No previous entries to undo.");
-    }
+  const addProtein = () => {
+    Alert.prompt(
+      'Add Protein',
+      'Enter grams to add',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Add',
+          onPress: (value) => {
+            const amount = parseInt(value) || 0;
+            if (amount > 0) {
+              setProtein(prev => prev + amount);
+            }
+          }
+        }
+      ],
+      'plain-text',
+      '',
+      'number-pad'
+    );
+  };
+
+  const toggleCreatine = () => {
+    setCreatineTaken(prev => !prev);
+  };
+
+  const toggleFishOil = () => {
+    setFishOilTaken(prev => !prev);
+  };
+
+  const resetAll = () => {
+    Alert.alert(
+      'Reset Today',
+      'This will clear all values. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: () => {
+            setCalories(0);
+            setProtein(0);
+            setCreatineTaken(false);
+            setFishOilTaken(false);
+          }
+        }
+      ]
+    );
   };
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-
-        <View style={styles.header}>
-          <Text style={styles.title}>Food Tracker</Text>
-        </View>
-
-        <View style={styles.countersContainer}>
-          <View style={styles.counterCard}>
-            <Text style={styles.counterLabel}>Calories</Text>
-            <Text style={styles.counterValue}>{calories}</Text>
-            <Text style={styles.counterUnit}>kcal</Text>
+        <StatusBar style="dark" backgroundColor="#f8f9fa" />
+        
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Today's Nutrition</Text>
+            <Text style={styles.subtitle}>Track your daily intake</Text>
           </View>
 
-          <View style={styles.counterCard}>
-            <Text style={styles.counterLabel}>Protein</Text>
-            <Text style={styles.counterValue}>{protein}</Text>
-            <Text style={styles.counterUnit}>g</Text>
+          {/* Nutrition Display */}
+          <View style={styles.nutritionSection}>
+            <View style={styles.nutritionCard}>
+              <View style={styles.nutritionItem}>
+                <Text style={styles.nutritionValue}>{calories}</Text>
+                <Text style={styles.nutritionLabel}>Calories</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.nutritionItem}>
+                <Text style={styles.nutritionValue}>{protein}g</Text>
+                <Text style={styles.nutritionLabel}>Protein</Text>
+              </View>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.addButton} onPress={addValues}>
-            <Text style={styles.addButtonText}>+</Text>
-            <Text style={styles.buttonLabel}>Add Food</Text>
-          </TouchableOpacity>
+          {/* Add Buttons */}
+          <View style={styles.addButtonsSection}>
+            <TouchableOpacity style={styles.addButton} onPress={addCalories}>
+              <Text style={styles.addButtonText}>+ Calories</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.addButton} onPress={addProtein}>
+              <Text style={styles.addButtonText}>+ Protein</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={[
-              styles.undoButton,
-              history.length === 0 && styles.disabledButton,
-            ]}
-            onPress={undoLastEntry}
-            disabled={history.length === 0}
-          >
-            <Text
-              style={[
-                styles.undoButtonText,
-                history.length === 0 && styles.disabledText,
-              ]}
+          {/* Supplements */}
+          <View style={styles.supplementsSection}>
+            <Text style={styles.sectionTitle}>Daily Supplements</Text>
+            
+            <TouchableOpacity 
+              style={[styles.toggleButton, creatineTaken && styles.toggleButtonActive]}
+              onPress={toggleCreatine}
             >
-              ↶
-            </Text>
-            <Text
-              style={[
-                styles.buttonLabel,
-                history.length === 0 && styles.disabledText,
-              ]}
+              <View style={styles.toggleContent}>
+                <Text style={styles.toggleIcon}>💊</Text>
+                <Text style={[styles.toggleText, creatineTaken && styles.toggleTextActive]}>
+                  Creatine
+                </Text>
+              </View>
+              <View style={[styles.toggleIndicator, creatineTaken && styles.toggleIndicatorActive]} />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.toggleButton, fishOilTaken && styles.toggleButtonActive]}
+              onPress={toggleFishOil}
             >
-              Undo
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <View style={styles.toggleContent}>
+                <Text style={styles.toggleIcon}>🐟</Text>
+                <Text style={[styles.toggleText, fishOilTaken && styles.toggleTextActive]}>
+                  Fish Oil
+                </Text>
+              </View>
+              <View style={[styles.toggleIndicator, fishOilTaken && styles.toggleIndicatorActive]} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Reset Button */}
+          <View style={styles.resetSection}>
+            <TouchableOpacity style={styles.resetButton} onPress={resetAll}>
+              <Text style={styles.resetButtonText}>Reset Day</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -130,108 +175,192 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 20,
+    backgroundColor: '#f8f9fa',
   },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    paddingBottom: 40,
+  },
+  
+  // Header
   header: {
-    alignItems: "center",
-    paddingVertical: 30,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 32,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 4,
   },
-  countersContainer: {
-    flex: 1,
-    justifyContent: "center",
-    gap: 30,
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+    fontWeight: '400',
   },
-  counterCard: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    padding: 30,
-    alignItems: "center",
-    shadowColor: "#000",
+  
+  // Nutrition Display
+  nutritionSection: {
+    paddingHorizontal: 24,
+    marginBottom: 32,
+  },
+  nutritionCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  counterLabel: {
-    fontSize: 18,
-    color: "#666",
-    marginBottom: 10,
+  nutritionItem: {
+    alignItems: 'center',
+    flex: 1,
   },
-  counterValue: {
+  nutritionValue: {
     fontSize: 48,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: '800',
+    color: '#1a1a1a',
+    marginBottom: 8,
   },
-  counterUnit: {
-    fontSize: 16,
-    color: "#999",
-    marginTop: 5,
+  nutritionLabel: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 40,
-    gap: 20,
+  divider: {
+    width: 1,
+    height: 60,
+    backgroundColor: '#e5e7eb',
+    marginHorizontal: 20,
+  },
+  
+  // Add Buttons
+  addButtonsSection: {
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 40,
   },
   addButton: {
     flex: 1,
-    backgroundColor: "#4CAF50",
-    borderRadius: 15,
-    paddingVertical: 20,
-    alignItems: "center",
-    shadowColor: "#000",
+    backgroundColor: '#3b82f6',
+    borderRadius: 16,
+    paddingVertical: 18,
+    alignItems: 'center',
+    shadowColor: '#3b82f6',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 6,
   },
   addButtonText: {
-    fontSize: 36,
-    color: "white",
-    fontWeight: "bold",
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  undoButton: {
-    flex: 1,
-    backgroundColor: "#FF9800",
-    borderRadius: 15,
-    paddingVertical: 20,
-    alignItems: "center",
-    shadowColor: "#000",
+  
+  // Supplements
+  supplementsSection: {
+    paddingHorizontal: 24,
+    marginBottom: 40,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 20,
+  },
+  toggleButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 2,
+    borderColor: '#f3f4f6',
+  },
+  toggleButtonActive: {
+    borderColor: '#10b981',
+    backgroundColor: '#f0fdf4',
+  },
+  toggleContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  toggleIcon: {
+    fontSize: 24,
+    marginRight: 16,
+  },
+  toggleText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#6b7280',
+  },
+  toggleTextActive: {
+    color: '#059669',
+    fontWeight: '600',
+  },
+  toggleIndicator: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#e5e7eb',
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+  },
+  toggleIndicatorActive: {
+    backgroundColor: '#10b981',
+    borderColor: '#059669',
+  },
+  
+  // Reset Button
+  resetSection: {
+    paddingHorizontal: 24,
+  },
+  resetButton: {
+    backgroundColor: '#ef4444',
+    borderRadius: 16,
+    paddingVertical: 18,
+    alignItems: 'center',
+    shadowColor: '#ef4444',
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  undoButtonText: {
-    fontSize: 36,
-    color: "white",
-    fontWeight: "bold",
-  },
-  buttonLabel: {
+  resetButtonText: {
+    color: '#ffffff',
     fontSize: 16,
-    color: "white",
-    marginTop: 5,
-    fontWeight: "600",
-  },
-  disabledButton: {
-    backgroundColor: "#cccccc",
-  },
-  disabledText: {
-    color: "#999999",
+    fontWeight: '600',
   },
 });
