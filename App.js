@@ -22,7 +22,11 @@ import { CalendarModal } from "./src/components/calendar/CalendarModal";
 import { globalStyles } from "./src/styles/globalStyles";
 
 // Utils
-import { triggerLightHaptic, triggerMediumHaptic, triggerWarningHaptic } from "./src/utils/haptics";
+import {
+  triggerLightHaptic,
+  triggerMediumHaptic,
+  triggerWarningHaptic,
+} from "./src/utils/haptics";
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -31,7 +35,7 @@ export default function App() {
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
 
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  const theme = isDarkMode ? lightTheme : darkTheme;
 
   const addCalories = () => {
     Alert.prompt(
@@ -45,7 +49,7 @@ export default function App() {
             const amount = parseInt(value) || 0;
             if (amount > 0) {
               nutritionData.updateTodayData({
-                calories: Math.max(0, todayData.calories + amount)
+                calories: Math.max(0, todayData.calories + amount),
               });
               triggerLightHaptic();
             }
@@ -70,7 +74,7 @@ export default function App() {
             const amount = parseInt(value) || 0;
             if (amount > 0) {
               nutritionData.updateTodayData({
-                protein: Math.max(0, todayData.protein + amount)
+                protein: Math.max(0, todayData.protein + amount),
               });
               triggerLightHaptic();
             }
@@ -85,34 +89,43 @@ export default function App() {
 
   const toggleCreatine = () => {
     nutritionData.updateTodayData({
-      creatine: !todayData.creatine
+      creatine: !todayData.creatine,
     });
     triggerLightHaptic();
   };
 
   const toggleFishOil = () => {
     nutritionData.updateTodayData({
-      fishOil: !todayData.fishOil
+      fishOil: !todayData.fishOil,
     });
     triggerLightHaptic();
   };
 
-  const resetAll = () => {
-    Alert.alert("Reset All Data", "This will clear ALL nutrition data from all days. This cannot be undone.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Reset Everything",
-        style: "destructive",
-        onPress: () => {
-          nutritionData.resetAllData();
-          triggerWarningHaptic();
+  const resetToday = () => {
+    Alert.alert(
+      "Reset Today",
+      "This will clear today's nutrition data (calories, protein, supplements).",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reset Today",
+          style: "destructive",
+          onPress: () => {
+            nutritionData.updateTodayData({
+              calories: 0,
+              protein: 0,
+              creatine: false,
+              fishOil: false,
+            });
+            triggerLightHaptic();
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
+    setIsDarkMode((prev) => !prev);
     triggerMediumHaptic();
   };
 
@@ -128,8 +141,16 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
-        <SafeAreaView style={[globalStyles.container, { backgroundColor: theme.background }]}>
-          <StatusBar style={isDarkMode ? "light" : "dark"} backgroundColor={theme.background} />
+        <SafeAreaView
+          style={[
+            globalStyles.container,
+            { backgroundColor: theme.background },
+          ]}
+        >
+          <StatusBar
+            style={isDarkMode ? "light" : "dark"}
+            backgroundColor={theme.background}
+          />
 
           <ScrollView
             style={globalStyles.scrollView}
@@ -144,10 +165,7 @@ export default function App() {
 
             <NutritionCard todayData={todayData} />
 
-            <AddButtons
-              onAddCalories={addCalories}
-              onAddProtein={addProtein}
-            />
+            <AddButtons onAddCalories={addCalories} onAddProtein={addProtein} />
 
             <SupplementSection
               todayData={todayData}
@@ -155,7 +173,7 @@ export default function App() {
               onToggleFishOil={toggleFishOil}
             />
 
-            <ResetButton onReset={resetAll} />
+            <ResetButton onReset={resetToday} />
           </ScrollView>
 
           <CalendarModal

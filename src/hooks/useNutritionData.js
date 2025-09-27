@@ -33,11 +33,6 @@ export const useNutritionData = () => {
     saveData("nutritionData", newData);
   };
 
-  const resetAllData = () => {
-    setData({});
-    saveData("nutritionData", {});
-  };
-
   const getDataForDate = (date) => {
     const dateKey = format(date, "yyyy-MM-dd");
     return (
@@ -64,7 +59,6 @@ export const useNutritionData = () => {
     data,
     getTodayData,
     updateTodayData,
-    resetAllData,
     getDataForDate,
   };
 };

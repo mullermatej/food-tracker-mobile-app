@@ -18,7 +18,7 @@ export const ResetButton = ({ onReset }) => {
         ]}
         onPress={onReset}
       >
-        <Text style={buttonStyles.resetButtonText}>Reset All Data</Text>
+        <Text style={buttonStyles.resetButtonText}>Reset Today</Text>
       </TouchableOpacity>
     </View>
   );

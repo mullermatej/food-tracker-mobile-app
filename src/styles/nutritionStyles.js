@@ -24,7 +24,7 @@ export const nutritionStyles = StyleSheet.create({
     flex: 1,
   },
   nutritionValue: {
-    fontSize: 48,
+    fontSize: 38,
     fontWeight: "800",
     marginBottom: 8,
   },
