@@ -1,9 +1,13 @@
-import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
-import { useTheme } from '../../context/ThemeContext';
-import { supplementStyles } from '../../styles/supplementStyles';
+import React from "react";
+import { View, TouchableOpacity, Text } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
+import { supplementStyles } from "../../styles/supplementStyles";
 
-export const SupplementSection = ({ todayData, onToggleCreatine, onToggleFishOil }) => {
+export const SupplementSection = ({
+  todayData,
+  onToggleCreatine,
+  onToggleFishOil,
+}) => {
   const theme = useTheme();
 
   return (
@@ -15,14 +19,14 @@ export const SupplementSection = ({ todayData, onToggleCreatine, onToggleFishOil
       <TouchableOpacity
         style={[
           supplementStyles.toggleButton,
-          { 
-            backgroundColor: theme.cardBackground, 
-            borderColor: theme.border, 
-            shadowColor: theme.shadow 
+          {
+            backgroundColor: theme.cardBackground,
+            borderColor: theme.border,
+            shadowColor: theme.shadow,
           },
-          todayData.creatine && { 
-            borderColor: theme.success, 
-            backgroundColor: theme.successBackground 
+          todayData.creatine && {
+            borderColor: theme.success,
+            backgroundColor: theme.successBackground,
           },
         ]}
         onPress={onToggleCreatine}
@@ -43,7 +47,10 @@ export const SupplementSection = ({ todayData, onToggleCreatine, onToggleFishOil
           style={[
             supplementStyles.toggleIndicator,
             { backgroundColor: theme.border, borderColor: theme.border },
-            todayData.creatine && { backgroundColor: theme.success, borderColor: theme.success },
+            todayData.creatine && {
+              backgroundColor: theme.success,
+              borderColor: theme.success,
+            },
           ]}
         />
       </TouchableOpacity>
@@ -51,14 +58,14 @@ export const SupplementSection = ({ todayData, onToggleCreatine, onToggleFishOil
       <TouchableOpacity
         style={[
           supplementStyles.toggleButton,
-          { 
-            backgroundColor: theme.cardBackground, 
-            borderColor: theme.border, 
-            shadowColor: theme.shadow 
+          {
+            backgroundColor: theme.cardBackground,
+            borderColor: theme.border,
+            shadowColor: theme.shadow,
           },
-          todayData.fishOil && { 
-            borderColor: theme.success, 
-            backgroundColor: theme.successBackground 
+          todayData.fishOil && {
+            borderColor: theme.success,
+            backgroundColor: theme.successBackground,
           },
         ]}
         onPress={onToggleFishOil}
@@ -79,7 +86,10 @@ export const SupplementSection = ({ todayData, onToggleCreatine, onToggleFishOil
           style={[
             supplementStyles.toggleIndicator,
             { backgroundColor: theme.border, borderColor: theme.border },
-            todayData.fishOil && { backgroundColor: theme.success, borderColor: theme.success },
+            todayData.fishOil && {
+              backgroundColor: theme.success,
+              borderColor: theme.success,
+            },
           ]}
         />
       </TouchableOpacity>

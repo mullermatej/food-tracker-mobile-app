@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { useLocalStorage } from './useLocalStorage';
+import { useLocalStorage } from "./useLocalStorage";
 
 export const useNutritionData = () => {
   const [data, setData] = useState({});
@@ -10,7 +10,14 @@ export const useNutritionData = () => {
 
   const getTodayData = () => {
     const today = getTodayKey();
-    return data[today] || { calories: 0, protein: 0, creatine: false, fishOil: false };
+    return (
+      data[today] || {
+        calories: 0,
+        protein: 0,
+        creatine: false,
+        fishOil: false,
+      }
+    );
   };
 
   const updateTodayData = (updates) => {
@@ -33,7 +40,14 @@ export const useNutritionData = () => {
 
   const getDataForDate = (date) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    return data[dateKey] || { calories: 0, protein: 0, creatine: false, fishOil: false };
+    return (
+      data[dateKey] || {
+        calories: 0,
+        protein: 0,
+        creatine: false,
+        fishOil: false,
+      }
+    );
   };
 
   useEffect(() => {
