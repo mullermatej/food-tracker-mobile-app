@@ -17,6 +17,7 @@ import { AddButtons } from "./src/components/ui/AddButtons";
 import { SupplementSection } from "./src/components/ui/SupplementSection";
 import { ResetButton } from "./src/components/ui/ResetButton";
 import { CalendarModal } from "./src/components/calendar/CalendarModal";
+import { SettingsModal } from "./src/components/ui/SettingsModal";
 
 // Styles
 import { globalStyles } from "./src/styles/globalStyles";
@@ -31,6 +32,7 @@ import {
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [calendarVisible, setCalendarVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
@@ -138,6 +140,14 @@ export default function App() {
     setSelectedCalendarDate(date);
   };
 
+  const openSettings = () => {
+    setSettingsVisible(true);
+  };
+
+  const closeSettings = () => {
+    setSettingsVisible(false);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
@@ -158,9 +168,7 @@ export default function App() {
             showsVerticalScrollIndicator={false}
           >
             <TodayHeader
-              onThemeToggle={toggleTheme}
-              onCalendarPress={openCalendar}
-              isDarkMode={isDarkMode}
+              onSettingsPress={openSettings}
             />
 
             <NutritionCard todayData={todayData} />
@@ -182,6 +190,14 @@ export default function App() {
             nutritionData={nutritionData}
             onDateSelect={handleDateSelect}
             selectedDate={selectedCalendarDate}
+          />
+
+          <SettingsModal
+            visible={settingsVisible}
+            onClose={closeSettings}
+            onToggleTheme={toggleTheme}
+            onOpenCalendar={openCalendar}
+            isDarkMode={isDarkMode}
           />
         </SafeAreaView>
       </SafeAreaProvider>

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-export const formatDate = (date, formatString = "EEEE, MMM d, yyyy") => {
+export const formatDate = (date, formatString = "EEEE, MMM d") => {
   return format(date, formatString);
 };
 
