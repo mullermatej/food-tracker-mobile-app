@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { useTheme } from '../../context/ThemeContext';
-import { lightTheme } from '../../utils/themes';
+} from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { useTheme } from "../../context/ThemeContext";
+import { lightTheme } from "../../utils/themes";
 
 const styles = {
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
   },
   settingsSheet: {
     borderTopLeftRadius: 20,
@@ -28,37 +28,37 @@ const styles = {
     width: 40,
     height: 4,
     borderRadius: 2,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 20,
     opacity: 0.3,
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 4,
   },
   settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   settingIcon: {
     fontSize: 20,
     marginRight: 12,
     width: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   settingText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   settingValue: {
     fontSize: 14,
@@ -67,12 +67,12 @@ const styles = {
   },
 };
 
-export const SettingsModal = ({ 
-  visible, 
-  onClose, 
-  onToggleTheme, 
-  onOpenCalendar, 
-  isDarkMode 
+export const SettingsModal = ({
+  visible,
+  onClose,
+  onToggleTheme,
+  onOpenCalendar,
+  isDarkMode,
 }) => {
   const theme = useTheme();
 
@@ -95,40 +95,43 @@ export const SettingsModal = ({
     >
       <SafeAreaView style={styles.modalContainer}>
         <StatusBar style={theme === lightTheme ? "dark" : "light"} />
-        
-        <TouchableOpacity 
-          style={{ flex: 1 }} 
-          activeOpacity={1} 
+
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          activeOpacity={1}
           onPress={onClose}
         />
-        
-        <View style={[styles.settingsSheet, { backgroundColor: theme.cardBackground }]}>
+
+        <View
+          style={[
+            styles.settingsSheet,
+            { backgroundColor: theme.cardBackground },
+          ]}
+        >
           <View style={[styles.handle, { backgroundColor: theme.text }]} />
-          
-          <Text style={[styles.title, { color: theme.text }]}>
-            Settings
-          </Text>
-          
-          <TouchableOpacity 
-            style={styles.settingItem} 
+
+          <Text style={[styles.title, { color: theme.text }]}>Settings</Text>
+
+          <TouchableOpacity
+            style={styles.settingItem}
             onPress={handleThemeToggle}
             activeOpacity={0.7}
           >
             <View style={styles.settingLeft}>
-              <Text style={styles.settingIcon}>
-                {isDarkMode ? "☀️" : "🌙"}
-              </Text>
+              <Text style={styles.settingIcon}>{isDarkMode ? "☀️" : "🌙"}</Text>
               <Text style={[styles.settingText, { color: theme.text }]}>
                 Theme
               </Text>
-              <Text style={[styles.settingValue, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.settingValue, { color: theme.textSecondary }]}
+              >
                 {isDarkMode ? "Switch to Light" : "Switch to Dark"}
               </Text>
             </View>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.settingItem} 
+
+          <TouchableOpacity
+            style={styles.settingItem}
             onPress={handleCalendarOpen}
             activeOpacity={0.7}
           >
@@ -137,7 +140,9 @@ export const SettingsModal = ({
               <Text style={[styles.settingText, { color: theme.text }]}>
                 Calendar
               </Text>
-              <Text style={[styles.settingValue, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.settingValue, { color: theme.textSecondary }]}
+              >
                 View history
               </Text>
             </View>

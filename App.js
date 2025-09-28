@@ -167,9 +167,7 @@ export default function App() {
             contentContainerStyle={globalStyles.content}
             showsVerticalScrollIndicator={false}
           >
-            <TodayHeader
-              onSettingsPress={openSettings}
-            />
+            <TodayHeader onSettingsPress={openSettings} />
 
             <NutritionCard todayData={todayData} />
 
