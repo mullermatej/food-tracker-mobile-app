@@ -67,6 +67,7 @@ Then open this link on your phone:
 
 ## 🏗️ Project Structure
 
+```
 food-tracker-app/
 ├── src/
 │ ├── components/ # Reusable UI components
@@ -80,6 +81,7 @@ food-tracker-app/
 ├── App.js # Main app component
 ├── app.json # Expo configuration
 └── package.json # Dependencies and scripts
+```
 
 ## 🔧 Tech Stack
 
