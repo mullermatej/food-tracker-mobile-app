@@ -9,6 +9,7 @@ import { lightTheme, darkTheme } from "./src/utils/themes";
 
 // Hooks
 import { useNutritionData } from "./src/hooks/useNutritionData";
+import { useLocalStorage } from "./src/hooks/useLocalStorage";
 
 // Components
 import { TodayHeader } from "./src/components/ui/TodayHeader";
@@ -34,8 +35,22 @@ export default function App() {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
+  const [themeLoaded, setThemeLoaded] = useState(false);
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
+  const { saveData, loadData } = useLocalStorage();
+
+  // Load theme preference on app start
+  useEffect(() => {
+    const loadThemePreference = async () => {
+      const savedTheme = await loadData("theme_preference");
+      if (savedTheme !== null) {
+        setIsDarkMode(savedTheme);
+      }
+      setThemeLoaded(true);
+    };
+    loadThemePreference();
+  }, [loadData]);
 
   // Use darkTheme when dark mode is enabled
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -181,8 +196,10 @@ export default function App() {
     );
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev);
+  const toggleTheme = async () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    await saveData("theme_preference", newTheme);
     triggerMediumHaptic();
   };
 
@@ -202,6 +219,11 @@ export default function App() {
   const closeSettings = () => {
     setSettingsVisible(false);
   };
+
+  // Don't render until theme preference is loaded
+  if (!themeLoaded) {
+    return null;
+  }
 
   return (
     <ThemeProvider theme={{ ...theme, animated }}>
