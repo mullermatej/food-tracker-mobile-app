@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../context/ThemeContext";
 import { lightTheme } from "../../utils/themes";
 
