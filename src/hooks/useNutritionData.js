@@ -45,6 +45,25 @@ export const useNutritionData = () => {
     );
   };
 
+  const updateDataForDate = (date, updates) => {
+    const dateKey = format(date, "yyyy-MM-dd");
+    const prev = data[dateKey] || {
+      calories: 0,
+      protein: 0,
+      creatine: false,
+      fishOil: false,
+    };
+    const newData = {
+      ...data,
+      [dateKey]: {
+        ...prev,
+        ...updates,
+      },
+    };
+    setData(newData);
+    saveData("nutritionData", newData);
+  };
+
   useEffect(() => {
     const loadInitialData = async () => {
       const stored = await loadData("nutritionData");
@@ -60,5 +79,6 @@ export const useNutritionData = () => {
     getTodayData,
     updateTodayData,
     getDataForDate,
+    updateDataForDate,
   };
 };

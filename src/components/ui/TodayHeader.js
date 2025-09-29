@@ -12,8 +12,8 @@ const styles = {
   headerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 8,
+    alignItems: "center",
+    marginBottom: 12,
   },
   settingsButton: {
     width: 32,
@@ -27,10 +27,8 @@ const styles = {
     fontSize: 16,
   },
   dateText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
@@ -46,6 +44,19 @@ export const TodayHeader = ({ onSettingsPress }) => {
     <View style={styles.header}>
       <View style={styles.headerTop}>
         <View style={{ width: 32 }} />
+        <Animated.Text
+          style={[
+            styles.dateText,
+            {
+              color: theme.animated?.text || theme.text,
+              textAlign: "center",
+              flex: 1,
+            },
+          ]}
+          numberOfLines={1}
+        >
+          {formatDate(new Date())}
+        </Animated.Text>
         <TouchableOpacity
           style={styles.settingsButton}
           onPress={onSettingsPress}
@@ -60,11 +71,6 @@ export const TodayHeader = ({ onSettingsPress }) => {
           </Animated.Text>
         </TouchableOpacity>
       </View>
-      <Animated.Text
-        style={[styles.dateText, { color: theme.animated?.text || theme.text }]}
-      >
-        {formatDate(new Date())}
-      </Animated.Text>
       <Animated.Text
         style={[
           styles.subtitle,
