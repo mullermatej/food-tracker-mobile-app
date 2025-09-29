@@ -1,37 +1,39 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { buttonStyles } from "../../styles/buttonStyles";
 
 export const AddButtons = ({ onAddCalories, onAddProtein }) => {
   const theme = useTheme();
+  const AnimatedTouchableOpacity =
+    Animated.createAnimatedComponent(TouchableOpacity);
 
   return (
     <View style={buttonStyles.addButtonsSection}>
-      <TouchableOpacity
+      <AnimatedTouchableOpacity
         style={[
           buttonStyles.addButton,
           {
-            backgroundColor: theme.primary,
-            shadowColor: theme.primary,
+            backgroundColor: theme.animated?.primary || theme.primary,
+            shadowColor: theme.animated?.primary || theme.primary,
           },
         ]}
         onPress={onAddCalories}
       >
         <Text style={buttonStyles.addButtonText}>+ Calories</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
+      </AnimatedTouchableOpacity>
+      <AnimatedTouchableOpacity
         style={[
           buttonStyles.addButton,
           {
-            backgroundColor: theme.primary,
-            shadowColor: theme.primary,
+            backgroundColor: theme.animated?.primary || theme.primary,
+            shadowColor: theme.animated?.primary || theme.primary,
           },
         ]}
         onPress={onAddProtein}
       >
         <Text style={buttonStyles.addButtonText}>+ Protein</Text>
-      </TouchableOpacity>
+      </AnimatedTouchableOpacity>
     </View>
   );
 };

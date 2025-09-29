@@ -1,52 +1,65 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { nutritionStyles } from "../../styles/nutritionStyles";
 
 export const NutritionCard = ({ todayData }) => {
   const theme = useTheme();
-
   return (
     <View style={nutritionStyles.nutritionSection}>
-      <View
+      <Animated.View
         style={[
           nutritionStyles.nutritionCard,
           {
-            backgroundColor: theme.cardBackground,
+            backgroundColor:
+              theme.animated?.cardBackground || theme.cardBackground,
             shadowColor: theme.shadow,
           },
         ]}
       >
         <View style={nutritionStyles.nutritionItem}>
-          <Text style={[nutritionStyles.nutritionValue, { color: theme.text }]}>
+          <Animated.Text
+            style={[
+              nutritionStyles.nutritionValue,
+              { color: theme.animated?.text || theme.text },
+            ]}
+          >
             {todayData.calories}
-          </Text>
-          <Text
+          </Animated.Text>
+          <Animated.Text
             style={[
               nutritionStyles.nutritionLabel,
-              { color: theme.textSecondary },
+              { color: theme.animated?.textSecondary || theme.textSecondary },
             ]}
           >
             Calories
-          </Text>
+          </Animated.Text>
         </View>
-        <View
-          style={[nutritionStyles.divider, { backgroundColor: theme.border }]}
+        <Animated.View
+          style={[
+            nutritionStyles.divider,
+            { backgroundColor: theme.animated?.border || theme.border },
+          ]}
         />
         <View style={nutritionStyles.nutritionItem}>
-          <Text style={[nutritionStyles.nutritionValue, { color: theme.text }]}>
+          <Animated.Text
+            style={[
+              nutritionStyles.nutritionValue,
+              { color: theme.animated?.text || theme.text },
+            ]}
+          >
             {todayData.protein}g
-          </Text>
-          <Text
+          </Animated.Text>
+          <Animated.Text
             style={[
               nutritionStyles.nutritionLabel,
-              { color: theme.textSecondary },
+              { color: theme.animated?.textSecondary || theme.textSecondary },
             ]}
           >
             Protein
-          </Text>
+          </Animated.Text>
         </View>
-      </View>
+      </Animated.View>
     </View>
   );
 };

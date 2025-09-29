@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Alert, ScrollView } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, ScrollView, Animated, Easing } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -37,7 +37,62 @@ export default function App() {
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
 
-  const theme = isDarkMode ? lightTheme : darkTheme;
+  // Use darkTheme when dark mode is enabled
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
+  // Animated background cross-fade between dark and light backgrounds
+  const bgAnim = useRef(new Animated.Value(isDarkMode ? 0 : 1)).current; // 0 = dark, 1 = light
+
+  useEffect(() => {
+    Animated.timing(bgAnim, {
+      toValue: isDarkMode ? 0 : 1,
+      duration: 450,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: false, // color/layout animations require native driver off
+    }).start();
+  }, [isDarkMode, bgAnim]);
+
+  const interpolatedBg = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [darkTheme.background, lightTheme.background],
+  });
+
+  // Animated theme colors for smooth transitions across the UI
+  const animated = {
+    background: interpolatedBg,
+    cardBackground: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.cardBackground, lightTheme.cardBackground],
+    }),
+    text: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.text, lightTheme.text],
+    }),
+    textSecondary: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.textSecondary, lightTheme.textSecondary],
+    }),
+    border: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.border, lightTheme.border],
+    }),
+    primary: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.primary, lightTheme.primary],
+    }),
+    success: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.success, lightTheme.success],
+    }),
+    successBackground: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.successBackground, lightTheme.successBackground],
+    }),
+    danger: bgAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [darkTheme.danger, lightTheme.danger],
+    }),
+  };
 
   const addCalories = () => {
     Alert.prompt(
@@ -149,17 +204,28 @@ export default function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={{ ...theme, animated }}>
       <SafeAreaProvider>
         <SafeAreaView
-          style={[
-            globalStyles.container,
-            { backgroundColor: theme.background },
-          ]}
+          style={[globalStyles.container, { backgroundColor: "transparent" }]}
         >
+          {/* Animated background layer: only the app background fades; content colors follow theme instantly */}
+          <Animated.View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              backgroundColor: interpolatedBg,
+            }}
+          />
           <StatusBar
             style={isDarkMode ? "light" : "dark"}
-            backgroundColor={theme.background}
+            backgroundColor={
+              isDarkMode ? darkTheme.background : lightTheme.background
+            }
           />
 
           <ScrollView

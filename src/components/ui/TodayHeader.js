@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { formatDate } from "../../utils/dateUtils";
 
@@ -50,17 +50,29 @@ export const TodayHeader = ({ onSettingsPress }) => {
           style={styles.settingsButton}
           onPress={onSettingsPress}
         >
-          <Text style={[styles.settingsIcon, { color: theme.textSecondary }]}>
+          <Animated.Text
+            style={[
+              styles.settingsIcon,
+              { color: theme.animated?.textSecondary || theme.textSecondary },
+            ]}
+          >
             ⚙️
-          </Text>
+          </Animated.Text>
         </TouchableOpacity>
       </View>
-      <Text style={[styles.dateText, { color: theme.text }]}>
+      <Animated.Text
+        style={[styles.dateText, { color: theme.animated?.text || theme.text }]}
+      >
         {formatDate(new Date())}
-      </Text>
-      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+      </Animated.Text>
+      <Animated.Text
+        style={[
+          styles.subtitle,
+          { color: theme.animated?.textSecondary || theme.textSecondary },
+        ]}
+      >
         Today's Nutrition
-      </Text>
+      </Animated.Text>
     </View>
   );
 };

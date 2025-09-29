@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { supplementStyles } from "../../styles/supplementStyles";
 
@@ -9,6 +9,8 @@ export const SupplementSection = ({
   onToggleFishOil,
 }) => {
   const theme = useTheme();
+  const AnimatedTouchableOpacity =
+    Animated.createAnimatedComponent(TouchableOpacity);
 
   return (
     <View style={supplementStyles.supplementsSection}>
@@ -16,83 +18,99 @@ export const SupplementSection = ({
         Daily Supplements
       </Text>
 
-      <TouchableOpacity
+      <AnimatedTouchableOpacity
         style={[
           supplementStyles.toggleButton,
           {
-            backgroundColor: theme.cardBackground,
-            borderColor: theme.border,
+            backgroundColor:
+              theme.animated?.cardBackground || theme.cardBackground,
+            borderColor: theme.animated?.border || theme.border,
             shadowColor: theme.shadow,
           },
           todayData.creatine && {
-            borderColor: theme.success,
-            backgroundColor: theme.successBackground,
+            borderColor: theme.animated?.success || theme.success,
+            backgroundColor:
+              theme.animated?.successBackground || theme.successBackground,
           },
         ]}
         onPress={onToggleCreatine}
       >
         <View style={supplementStyles.toggleContent}>
           <Text style={supplementStyles.toggleIcon}>💊</Text>
-          <Text
+          <Animated.Text
             style={[
               supplementStyles.toggleText,
-              { color: theme.textSecondary },
-              todayData.creatine && { color: theme.success, fontWeight: "600" },
+              { color: theme.animated?.textSecondary || theme.textSecondary },
+              todayData.creatine && {
+                color: theme.animated?.success || theme.success,
+                fontWeight: "600",
+              },
             ]}
           >
             Creatine
-          </Text>
+          </Animated.Text>
         </View>
-        <View
+        <Animated.View
           style={[
             supplementStyles.toggleIndicator,
-            { backgroundColor: theme.border, borderColor: theme.border },
+            {
+              backgroundColor: theme.animated?.border || theme.border,
+              borderColor: theme.animated?.border || theme.border,
+            },
             todayData.creatine && {
-              backgroundColor: theme.success,
-              borderColor: theme.success,
+              backgroundColor: theme.animated?.success || theme.success,
+              borderColor: theme.animated?.success || theme.success,
             },
           ]}
         />
-      </TouchableOpacity>
+      </AnimatedTouchableOpacity>
 
-      <TouchableOpacity
+      <AnimatedTouchableOpacity
         style={[
           supplementStyles.toggleButton,
           {
-            backgroundColor: theme.cardBackground,
-            borderColor: theme.border,
+            backgroundColor:
+              theme.animated?.cardBackground || theme.cardBackground,
+            borderColor: theme.animated?.border || theme.border,
             shadowColor: theme.shadow,
           },
           todayData.fishOil && {
-            borderColor: theme.success,
-            backgroundColor: theme.successBackground,
+            borderColor: theme.animated?.success || theme.success,
+            backgroundColor:
+              theme.animated?.successBackground || theme.successBackground,
           },
         ]}
         onPress={onToggleFishOil}
       >
         <View style={supplementStyles.toggleContent}>
           <Text style={supplementStyles.toggleIcon}>🐟</Text>
-          <Text
+          <Animated.Text
             style={[
               supplementStyles.toggleText,
-              { color: theme.textSecondary },
-              todayData.fishOil && { color: theme.success, fontWeight: "600" },
+              { color: theme.animated?.textSecondary || theme.textSecondary },
+              todayData.fishOil && {
+                color: theme.animated?.success || theme.success,
+                fontWeight: "600",
+              },
             ]}
           >
             Fish Oil
-          </Text>
+          </Animated.Text>
         </View>
-        <View
+        <Animated.View
           style={[
             supplementStyles.toggleIndicator,
-            { backgroundColor: theme.border, borderColor: theme.border },
+            {
+              backgroundColor: theme.animated?.border || theme.border,
+              borderColor: theme.animated?.border || theme.border,
+            },
             todayData.fishOil && {
-              backgroundColor: theme.success,
-              borderColor: theme.success,
+              backgroundColor: theme.animated?.success || theme.success,
+              borderColor: theme.animated?.success || theme.success,
             },
           ]}
         />
-      </TouchableOpacity>
+      </AnimatedTouchableOpacity>
     </View>
   );
 };
