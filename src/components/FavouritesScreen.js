@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Alert, Modal, TextInput, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  TextInput,
+  Pressable,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
 import { emit } from "../utils/eventBus";
@@ -79,7 +88,8 @@ export const FavouritesScreen = ({ navigation }) => {
     const calories = Number(newCalories) || 0;
     const protein = Number(newProtein) || 0;
     const newId = favourites.length
-      ? favourites.reduce((max, it) => Math.max(max, it.id), favourites[0].id) + 1
+      ? favourites.reduce((max, it) => Math.max(max, it.id), favourites[0].id) +
+        1
       : 1;
     const newItem = { id: newId, name, calories, protein };
     setFavourites((prev) => [...prev, newItem]);
@@ -103,7 +113,12 @@ export const FavouritesScreen = ({ navigation }) => {
       alignItems: "center",
       justifyContent: "space-between",
     },
-    backHit: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+    backHit: {
+      width: 36,
+      height: 36,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     backText: { fontSize: 18, color: theme.text },
     title: {
       fontSize: 20,
@@ -148,8 +163,18 @@ export const FavouritesScreen = ({ navigation }) => {
       paddingVertical: 48,
     },
     emptyEmoji: { fontSize: 36, marginBottom: 8 },
-    emptyTitle: { fontSize: 18, fontWeight: "600", color: theme.text, marginBottom: 6, textAlign: "center" },
-    emptyText: { fontSize: 14, color: theme.textSecondary, textAlign: "center" },
+    emptyTitle: {
+      fontSize: 18,
+      fontWeight: "600",
+      color: theme.text,
+      marginBottom: 6,
+      textAlign: "center",
+    },
+    emptyText: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      textAlign: "center",
+    },
     primaryButton: {
       backgroundColor: theme.primary,
       alignSelf: "stretch",
@@ -184,7 +209,12 @@ export const FavouritesScreen = ({ navigation }) => {
       borderColor: theme.border,
       padding: 16,
     },
-    modalTitle: { fontSize: 18, fontWeight: "700", color: theme.text, marginBottom: 12 },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: theme.text,
+      marginBottom: 12,
+    },
     input: {
       borderWidth: 1,
       borderColor: theme.border,
@@ -195,9 +225,9 @@ export const FavouritesScreen = ({ navigation }) => {
       marginBottom: 10,
       backgroundColor: theme.background,
     },
-  row: { flexDirection: "row" },
+    row: { flexDirection: "row" },
     rowItem: { flex: 1 },
-  modalActions: { flexDirection: "row", marginTop: 8 },
+    modalActions: { flexDirection: "row", marginTop: 8 },
     secondaryButton: {
       flex: 1,
       paddingVertical: 12,
@@ -222,7 +252,10 @@ export const FavouritesScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <TouchableOpacity style={styles.backHit} onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            style={styles.backHit}
+            onPress={() => navigation.goBack()}
+          >
             <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Favourites</Text>
@@ -241,7 +274,10 @@ export const FavouritesScreen = ({ navigation }) => {
             <Text style={styles.emptyText}>
               Save foods you often eat to add them faster.
             </Text>
-            <TouchableOpacity style={styles.primaryButton} onPress={openAddModal}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={openAddModal}
+            >
               <Text style={styles.primaryButtonText}>Add favourite</Text>
             </TouchableOpacity>
           </View>
@@ -252,7 +288,8 @@ export const FavouritesScreen = ({ navigation }) => {
               <View style={styles.itemTextWrap}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemMeta}>
-                  {item.calories} cal {" · "}{item.protein}g protein
+                  {item.calories} cal {" · "}
+                  {item.protein}g protein
                 </Text>
               </View>
               <View style={styles.actions}>
@@ -274,7 +311,10 @@ export const FavouritesScreen = ({ navigation }) => {
         )}
         ListFooterComponent={
           favourites.length > 0 ? (
-            <TouchableOpacity style={styles.primaryButton} onPress={openAddModal}>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={openAddModal}
+            >
               <Text style={styles.primaryButtonText}>Add favourite</Text>
             </TouchableOpacity>
           ) : null
@@ -282,7 +322,12 @@ export const FavouritesScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       />
 
-      <Modal visible={isAddOpen} animationType="fade" transparent onRequestClose={closeAddModal}>
+      <Modal
+        visible={isAddOpen}
+        animationType="fade"
+        transparent
+        onRequestClose={closeAddModal}
+      >
         <View style={styles.addModalOverlay}>
           <Pressable style={styles.overlayDismiss} onPress={closeAddModal} />
           <View style={styles.addModalCard}>
@@ -317,10 +362,16 @@ export const FavouritesScreen = ({ navigation }) => {
               </View>
             </View>
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.secondaryButton} onPress={closeAddModal}>
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={closeAddModal}
+              >
                 <Text style={styles.secondaryText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.confirmButton, { marginLeft: 8 }]} onPress={confirmAddItem}>
+              <TouchableOpacity
+                style={[styles.confirmButton, { marginLeft: 8 }]}
+                onPress={confirmAddItem}
+              >
                 <Text style={styles.confirmText}>Add</Text>
               </TouchableOpacity>
             </View>
