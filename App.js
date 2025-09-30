@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, ScrollView, Animated, Easing } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Context and Themes
-import { ThemeProvider } from "./src/context/ThemeContext";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { lightTheme, darkTheme } from "./src/utils/themes";
 
 // Hooks
@@ -19,6 +21,7 @@ import { SupplementSection } from "./src/components/ui/SupplementSection";
 import { ResetButton } from "./src/components/ui/ResetButton";
 import { CalendarModal } from "./src/components/calendar/CalendarModal";
 import { SettingsModal } from "./src/components/ui/SettingsModal";
+import { FavouritesScreen } from "./src/components/FavouritesScreen";
 
 // Styles
 import { globalStyles } from "./src/styles/globalStyles";
@@ -30,27 +33,15 @@ import {
   triggerWarningHaptic,
 } from "./src/utils/haptics";
 
-export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+const Stack = createNativeStackNavigator();
+
+function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
-  const [themeLoaded, setThemeLoaded] = useState(false);
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
-  const { saveData, loadData } = useLocalStorage();
-
-  // Load theme preference on app start
-  useEffect(() => {
-    const loadThemePreference = async () => {
-      const savedTheme = await loadData("theme_preference");
-      if (savedTheme !== null) {
-        setIsDarkMode(savedTheme);
-      }
-      setThemeLoaded(true);
-    };
-    loadThemePreference();
-  }, [loadData]);
+  const { saveData } = useLocalStorage();
 
   // Use darkTheme when dark mode is enabled
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -107,6 +98,18 @@ export default function App() {
       inputRange: [0, 1],
       outputRange: [darkTheme.danger, lightTheme.danger],
     }),
+  };
+
+  const addToToday = (item) => {
+    nutritionData.updateTodayData({
+      calories: todayData.calories + item.calories,
+      protein: todayData.protein + item.protein,
+    });
+    triggerLightHaptic();
+  };
+
+  const openFavourites = () => {
+    navigation.navigate("Favourites");
   };
 
   const addCalories = () => {
@@ -220,10 +223,18 @@ export default function App() {
     setSettingsVisible(false);
   };
 
-  // Don't render until theme preference is loaded
-  if (!themeLoaded) {
-    return null;
-  }
+  // Subscribe to add events from Favourites so that screen can stay mounted
+  useEffect(() => {
+    const { on } = require("./src/utils/eventBus");
+    const unsubscribe = on("add-from-favourites", (item) => {
+      nutritionData.updateTodayData({
+        calories: todayData.calories + (item?.calories || 0),
+        protein: todayData.protein + (item?.protein || 0),
+      });
+      triggerLightHaptic();
+    });
+    return unsubscribe;
+  }, [todayData.calories, todayData.protein]);
 
   return (
     <ThemeProvider theme={{ ...theme, animated }}>
@@ -259,7 +270,11 @@ export default function App() {
 
             <NutritionCard todayData={todayData} />
 
-            <AddButtons onAddCalories={addCalories} onAddProtein={addProtein} />
+            <AddButtons
+              onAddCalories={addCalories}
+              onAddProtein={addProtein}
+              onOpenFavourites={openFavourites}
+            />
 
             <SupplementSection
               todayData={todayData}
@@ -287,6 +302,58 @@ export default function App() {
           />
         </SafeAreaView>
       </SafeAreaProvider>
+    </ThemeProvider>
+  );
+}
+
+export default function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [themeLoaded, setThemeLoaded] = useState(false);
+  const { loadData } = useLocalStorage();
+
+  // Load theme preference on app start
+  useEffect(() => {
+    const loadThemePreference = async () => {
+      const savedTheme = await loadData("theme_preference");
+      if (savedTheme !== null) {
+        setIsDarkMode(savedTheme);
+      }
+      setThemeLoaded(true);
+    };
+    loadThemePreference();
+  }, [loadData]);
+
+  // Don't render until theme preference is loaded
+  if (!themeLoaded) {
+    return null;
+  }
+
+  return (
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Home">
+            {(props) => (
+              <HomeScreen
+                {...props}
+                isDarkMode={isDarkMode}
+                setIsDarkMode={setIsDarkMode}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="Favourites"
+            component={FavouritesScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </ThemeProvider>
   );
 }

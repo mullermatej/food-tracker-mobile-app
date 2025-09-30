@@ -3,12 +3,15 @@ import { StyleSheet } from "react-native";
 export const buttonStyles = StyleSheet.create({
   addButtonsSection: {
     paddingHorizontal: 24,
-    flexDirection: "row",
-    gap: 16,
+    flexDirection: "column",
+    gap: 12,
     marginBottom: 40,
   },
+  topButtonsRow: {
+    flexDirection: "row",
+    gap: 16,
+  },
   addButton: {
-    flex: 1,
     borderRadius: 16,
     paddingVertical: 18,
     alignItems: "center",
@@ -19,6 +22,12 @@ export const buttonStyles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 6,
+  },
+  topRowButton: {
+    flex: 1,
+  },
+  favouritesButton: {
+    width: "100%",
   },
   addButtonText: {
     color: "#ffffff",

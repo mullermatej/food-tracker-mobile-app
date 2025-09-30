@@ -14,6 +14,16 @@ export const calendarStyles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
   },
+  headerSideLeft: {
+    minWidth: 60,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  headerSideRight: {
+    minWidth: 60,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
   modalTitle: {
     fontSize: 18,
     fontWeight: "600",

@@ -394,27 +394,29 @@ export const CalendarModal = ({
             { borderBottomColor: theme.border },
           ]}
         >
-          <TouchableOpacity onPress={onClose}>
-            <Text
-              style={[calendarStyles.closeButton, { color: theme.primary }]}
-            >
-              Done
-            </Text>
-          </TouchableOpacity>
-          <Text style={[calendarStyles.modalTitle, { color: theme.text }]}>
-            Calendar
-          </Text>
-          {isEditableDate ? (
-            <TouchableOpacity onPress={openEdit}>
+          <View style={calendarStyles.headerSideLeft}>
+            <TouchableOpacity onPress={onClose}>
               <Text
                 style={[calendarStyles.closeButton, { color: theme.primary }]}
               >
-                Edit
+                Done
               </Text>
             </TouchableOpacity>
-          ) : (
-            <View style={{ width: 50 }} />
-          )}
+          </View>
+          <Text style={[calendarStyles.modalTitle, { color: theme.text }]}>
+            Calendar
+          </Text>
+          <View style={calendarStyles.headerSideRight}>
+            {isEditableDate ? (
+              <TouchableOpacity onPress={openEdit}>
+                <Text
+                  style={[calendarStyles.closeButton, { color: theme.primary }]}
+                >
+                  Edit
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
 
         {/* Month Navigation */}
