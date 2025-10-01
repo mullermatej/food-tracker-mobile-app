@@ -8,10 +8,12 @@ import {
   Modal,
   TextInput,
   Pressable,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
 import { emit } from "../utils/eventBus";
+import { parseDecimalInput, formatDecimalWithComma } from "../utils/numberFormat";
 
 const DUMMY_FAVOURITES = [
   {
@@ -85,8 +87,8 @@ export const FavouritesScreen = ({ navigation }) => {
       Alert.alert("Missing name", "Please enter a food name.");
       return;
     }
-    const calories = Number(newCalories) || 0;
-    const protein = Number(newProtein) || 0;
+  const calories = Number(newCalories) || 0;
+  const protein = parseDecimalInput(newProtein);
     const newId = favourites.length
       ? favourites.reduce((max, it) => Math.max(max, it.id), favourites[0].id) +
         1
@@ -289,7 +291,7 @@ export const FavouritesScreen = ({ navigation }) => {
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemMeta}>
                   {item.calories} cal {" · "}
-                  {item.protein}g protein
+                  {formatDecimalWithComma(item.protein)}g protein
                 </Text>
               </View>
               <View style={styles.actions}>
@@ -354,7 +356,7 @@ export const FavouritesScreen = ({ navigation }) => {
                 <TextInput
                   placeholder="Protein (g)"
                   placeholderTextColor={theme.textSecondary}
-                  keyboardType="numeric"
+                  keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
                   value={newProtein}
                   onChangeText={setNewProtein}
                   style={styles.input}

@@ -28,6 +28,7 @@ import {
 import { useTheme } from "../../context/ThemeContext";
 import { calendarStyles } from "../../styles/calendarStyles";
 import { lightTheme } from "../../utils/themes";
+import { parseDecimalInput, formatDecimalWithComma } from "../../utils/numberFormat";
 
 export const CalendarModal = ({
   visible,
@@ -236,7 +237,9 @@ export const CalendarModal = ({
         <View style={entryStyles.row}>
           <Text style={entryStyles.label}>Protein</Text>
           <View style={entryStyles.valueWrap}>
-            <Text style={entryStyles.value}>{dayData.protein}</Text>
+            <Text style={entryStyles.value}>
+              {formatDecimalWithComma(dayData.protein)}
+            </Text>
             <Text style={entryStyles.unit}>g</Text>
           </View>
         </View>
@@ -258,15 +261,15 @@ export const CalendarModal = ({
     if (!isEditableDate) return;
     const dayData = nutritionData.getDataForDate(selectedDate);
     setCaloriesStr(String(dayData.calories || 0));
-    setProteinStr(String(dayData.protein || 0));
+  setProteinStr(String(dayData.protein || 0).replace(".", ","));
     setCreatine(!!dayData.creatine);
     setFishOil(!!dayData.fishOil);
     setEditVisible(true);
   };
 
   const saveEdit = () => {
-    const calories = Math.max(0, parseInt(caloriesStr, 10) || 0);
-    const protein = Math.max(0, parseInt(proteinStr, 10) || 0);
+  const calories = Math.max(0, parseInt(caloriesStr, 10) || 0);
+  const protein = Math.max(0, parseDecimalInput(proteinStr) || 0);
     nutritionData.updateDataForDate(selectedDate, {
       calories,
       protein,
@@ -559,8 +562,8 @@ export const CalendarModal = ({
                     style={editStyles.input}
                     value={proteinStr}
                     onChangeText={setProteinStr}
-                    inputMode="numeric"
-                    keyboardType="number-pad"
+                    inputMode="decimal"
+                    keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
                   />
                 </View>
 

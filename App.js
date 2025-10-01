@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, Animated, Easing } from "react-native";
+import { Alert, ScrollView, Animated, Easing, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
@@ -32,6 +32,7 @@ import {
   triggerMediumHaptic,
   triggerWarningHaptic,
 } from "./src/utils/haptics";
+import { parseDecimalInput } from "./src/utils/numberFormat";
 
 const Stack = createNativeStackNavigator();
 
@@ -146,7 +147,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
         {
           text: "Add",
           onPress: (value) => {
-            const amount = parseInt(value) || 0;
+            const amount = parseDecimalInput(value);
             if (amount > 0) {
               nutritionData.updateTodayData({
                 protein: Math.max(0, todayData.protein + amount),
@@ -158,7 +159,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
       ],
       "plain-text",
       "",
-      "number-pad"
+      Platform.OS === "ios" ? "decimal-pad" : "numeric"
     );
   };
 

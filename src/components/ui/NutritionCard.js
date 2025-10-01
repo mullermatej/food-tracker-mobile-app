@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { nutritionStyles } from "../../styles/nutritionStyles";
+import { formatDecimalWithComma } from "../../utils/numberFormat";
 
 export const NutritionCard = ({ todayData }) => {
   const theme = useTheme();
@@ -48,7 +49,7 @@ export const NutritionCard = ({ todayData }) => {
               { color: theme.animated?.text || theme.text },
             ]}
           >
-            {todayData.protein}g
+            {formatDecimalWithComma(todayData.protein)}g
           </Animated.Text>
           <Animated.Text
             style={[

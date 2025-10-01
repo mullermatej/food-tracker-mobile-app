@@ -6,3 +6,4 @@ export {
   triggerWarningHaptic,
 } from "./haptics";
 export { lightTheme, darkTheme } from "./themes";
+export { parseDecimalInput, formatDecimalWithComma } from "./numberFormat";

@@ -1,6 +1,9 @@
 #To delete
 App_backup.js
 
+# Guide for copilot
+.github/
+
 # Expo
 .expo/
 dist/
