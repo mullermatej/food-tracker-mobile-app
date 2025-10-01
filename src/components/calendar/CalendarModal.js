@@ -28,7 +28,10 @@ import {
 import { useTheme } from "../../context/ThemeContext";
 import { calendarStyles } from "../../styles/calendarStyles";
 import { lightTheme } from "../../utils/themes";
-import { parseDecimalInput, formatDecimalWithComma } from "../../utils/numberFormat";
+import {
+  parseDecimalInput,
+  formatDecimalWithComma,
+} from "../../utils/numberFormat";
 
 export const CalendarModal = ({
   visible,
@@ -261,15 +264,15 @@ export const CalendarModal = ({
     if (!isEditableDate) return;
     const dayData = nutritionData.getDataForDate(selectedDate);
     setCaloriesStr(String(dayData.calories || 0));
-  setProteinStr(String(dayData.protein || 0).replace(".", ","));
+    setProteinStr(String(dayData.protein || 0).replace(".", ","));
     setCreatine(!!dayData.creatine);
     setFishOil(!!dayData.fishOil);
     setEditVisible(true);
   };
 
   const saveEdit = () => {
-  const calories = Math.max(0, parseInt(caloriesStr, 10) || 0);
-  const protein = Math.max(0, parseDecimalInput(proteinStr) || 0);
+    const calories = Math.max(0, parseInt(caloriesStr, 10) || 0);
+    const protein = Math.max(0, parseDecimalInput(proteinStr) || 0);
     nutritionData.updateDataForDate(selectedDate, {
       calories,
       protein,
@@ -563,7 +566,9 @@ export const CalendarModal = ({
                     value={proteinStr}
                     onChangeText={setProteinStr}
                     inputMode="decimal"
-                    keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
+                    keyboardType={
+                      Platform.OS === "ios" ? "decimal-pad" : "numeric"
+                    }
                   />
                 </View>
 
