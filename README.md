@@ -11,9 +11,9 @@ A modern React Native mobile app for tracking daily nutrition intake with an int
 - 📱 Clean, mobile-responsive design
 - 💾 Local data persistence
 
-## 🚀 Version 1.0.0
+## 🚀 Testing
 
-**📱 You need the Expo Go app to test this version**
+**📱 You need the Expo Go app to test**
 Download Expo Go from your app store:
 
 - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
@@ -83,25 +83,6 @@ food-tracker-app/
 └── package.json # Dependencies and scripts
 ```
 
-## 🔧 Tech Stack
-
-- **React Native** - Cross-platform mobile development
-- **Expo** - Development platform and build tools
-- **React Hooks** - State management and lifecycle
-- **AsyncStorage** - Local data persistence
-- **Expo Haptics** - Tactile feedback
-- **Date-fns** - Date manipulation utilities
-
 ## 🚀 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 👨‍💻 Author
-
-### Matej Muller
-
-- GitHub: [@mullermatej](https://github.com/mullermatej)
-- Repository: [food-tracker-mobile-app](https://github.com/mullermatej/food-tracker-mobile-app)
-- LinkedIn: [matej-muller-94b236235](https://www.linkedin.com/in/matej-muller-94b236235/)
-
----
+Contributions are welcome.
