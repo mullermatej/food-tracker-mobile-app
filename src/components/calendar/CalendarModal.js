@@ -155,6 +155,7 @@ export const CalendarModal = ({
         paddingVertical: 4,
         borderRadius: 10,
         backgroundColor: theme.primary + "20",
+        marginBottom: -3, // Fix in the future because of line height
       },
       todayBadgeText: { color: theme.primary, fontSize: 12, fontWeight: "600" },
       divider: {
