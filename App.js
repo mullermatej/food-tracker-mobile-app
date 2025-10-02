@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, ScrollView, Animated, Easing, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Context and Themes
@@ -349,10 +353,25 @@ export default function App() {
 
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <NavigationContainer>
+      <NavigationContainer
+        theme={{
+          ...(isDarkMode ? DarkTheme : DefaultTheme),
+          colors: {
+            ...((isDarkMode ? DarkTheme : DefaultTheme).colors || {}),
+            background: (isDarkMode ? darkTheme : lightTheme).background,
+            card: (isDarkMode ? darkTheme : lightTheme).background,
+            text: (isDarkMode ? darkTheme : lightTheme).text,
+            border: (isDarkMode ? darkTheme : lightTheme).border,
+            primary: (isDarkMode ? darkTheme : lightTheme).primary,
+          },
+        }}
+      >
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
+            contentStyle: {
+              backgroundColor: (isDarkMode ? darkTheme : lightTheme).background,
+            },
           }}
         >
           <Stack.Screen name="Home">
