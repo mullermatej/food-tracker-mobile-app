@@ -260,7 +260,10 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             contentContainerStyle={globalStyles.content}
             showsVerticalScrollIndicator={false}
           >
-            <TodayHeader onSettingsPress={openSettings} onNotesPress={openFoodNotes} />
+            <TodayHeader
+              onSettingsPress={openSettings}
+              onNotesPress={openFoodNotes}
+            />
 
             <NutritionCard todayData={todayData} />
 

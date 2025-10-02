@@ -8,6 +8,7 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
@@ -74,13 +75,22 @@ export const FoodNotesScreen = ({ navigation }) => {
       justifyContent: "space-between",
     },
     backHit: {
-      width: 44,
-      height: 44,
+      width: 40,
+      height: 40,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 22,
+      backgroundColor: theme.cardBackground,
+      borderWidth: 1,
+      borderColor: theme.border,
+      // subtle shadow/glow
+      shadowColor: theme.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3,
     },
-    backText: { fontSize: 18, color: theme.text },
+    backText: { fontSize: 19, fontWeight: "700", color: theme.text },
     title: {
       fontSize: 20,
       fontWeight: "700",
@@ -103,8 +113,7 @@ export const FoodNotesScreen = ({ navigation }) => {
       backgroundColor: theme.cardBackground,
       textAlignVertical: "top",
       fontSize: 16,
-      // Bounded height instead of filling the entire screen
-      minHeight: 360,
+      minHeight: 220,
       maxHeight: 360,
     },
     metaRow: {
@@ -131,13 +140,19 @@ export const FoodNotesScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backHit}
+        <Pressable
+          style={({ pressed }) => [
+            styles.backHit,
+            pressed && { backgroundColor: theme.primary + "10" },
+          ]}
           onPress={() => navigation.goBack()}
+          android_ripple={{ color: theme.primary + "20", borderless: false }}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
         >
           <Text style={styles.backText}>←</Text>
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.title}>Food Notes</Text>
         <View style={{ width: 44 }} />
       </View>

@@ -119,12 +119,21 @@ export const FavouritesScreen = ({ navigation }) => {
       justifyContent: "space-between",
     },
     backHit: {
-      width: 36,
-      height: 36,
+      width: 40,
+      height: 40,
       alignItems: "center",
       justifyContent: "center",
+      borderRadius: 22,
+      backgroundColor: theme.cardBackground,
+      borderWidth: 1,
+      borderColor: theme.border,
+      shadowColor: theme.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3,
     },
-    backText: { fontSize: 18, color: theme.text },
+    backText: { fontSize: 19, fontWeight: "700", color: theme.text },
     title: {
       fontSize: 20,
       fontWeight: "700",
@@ -257,12 +266,19 @@ export const FavouritesScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <TouchableOpacity
-            style={styles.backHit}
+          <Pressable
+            style={({ pressed }) => [
+              styles.backHit,
+              pressed && { backgroundColor: theme.primary + "10" },
+            ]}
             onPress={() => navigation.goBack()}
+            android_ripple={{ color: theme.primary + "20", borderless: false }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
           >
             <Text style={styles.backText}>←</Text>
-          </TouchableOpacity>
+          </Pressable>
           <Text style={styles.title}>Favourites</Text>
           <View style={{ width: 36 }} />
         </View>
