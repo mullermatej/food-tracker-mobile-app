@@ -2,6 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { supplementStyles } from "../../styles/supplementStyles";
+import AppSymbol from "./AppSymbol";
 
 export const SupplementSection = ({
   todayData,
@@ -36,7 +37,27 @@ export const SupplementSection = ({
         onPress={onToggleCreatine}
       >
         <View style={supplementStyles.toggleContent}>
-          <Text style={supplementStyles.toggleIcon}>💊</Text>
+          <View style={{ width: 24, marginRight: 16, alignItems: "center" }}>
+            <AppSymbol
+              name="pills.fill"
+              size={24}
+              color={todayData.creatine ? theme.success : theme.textSecondary}
+              fallback={
+                <Animated.Text
+                  style={[
+                    supplementStyles.toggleIcon,
+                    {
+                      color: todayData.creatine
+                        ? theme.animated?.success || theme.success
+                        : theme.animated?.textSecondary || theme.textSecondary,
+                    },
+                  ]}
+                >
+                  💊
+                </Animated.Text>
+              }
+            />
+          </View>
           <Animated.Text
             style={[
               supplementStyles.toggleText,
@@ -83,7 +104,27 @@ export const SupplementSection = ({
         onPress={onToggleFishOil}
       >
         <View style={supplementStyles.toggleContent}>
-          <Text style={supplementStyles.toggleIcon}>🐟</Text>
+          <View style={{ width: 24, marginRight: 16, alignItems: "center" }}>
+            <AppSymbol
+              name="fish.fill"
+              size={24}
+              color={todayData.fishOil ? theme.success : theme.textSecondary}
+              fallback={
+                <Animated.Text
+                  style={[
+                    supplementStyles.toggleIcon,
+                    {
+                      color: todayData.fishOil
+                        ? theme.animated?.success || theme.success
+                        : theme.animated?.textSecondary || theme.textSecondary,
+                    },
+                  ]}
+                >
+                  🐟
+                </Animated.Text>
+              }
+            />
+          </View>
           <Animated.Text
             style={[
               supplementStyles.toggleText,

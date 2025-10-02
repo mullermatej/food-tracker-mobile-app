@@ -3,6 +3,7 @@ import { Modal, View, Text, TouchableOpacity, Animated } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "../../context/ThemeContext";
 import { lightTheme } from "../../utils/themes";
+import AppSymbol from "./AppSymbol";
 
 const styles = {
   modalContainer: {
@@ -186,7 +187,20 @@ export const SettingsModal = ({
             activeOpacity={0.7}
           >
             <View style={styles.settingLeft}>
-              <Text style={styles.settingIcon}>{isDarkMode ? "🌙" : "☀️"}</Text>
+              <View
+                style={{ width: 24, marginRight: 12, alignItems: "center" }}
+              >
+                <AppSymbol
+                  name={isDarkMode ? "moon.fill" : "sun.max.fill"}
+                  size={20}
+                  color={theme.text}
+                  fallback={
+                    <Text style={[styles.settingIcon, { color: theme.text }]}>
+                      {isDarkMode ? "🌙" : "☀️"}
+                    </Text>
+                  }
+                />
+              </View>
               <Text style={[styles.settingText, { color: theme.text }]}>
                 Theme
               </Text>
@@ -228,7 +242,20 @@ export const SettingsModal = ({
             activeOpacity={0.7}
           >
             <View style={styles.settingLeft}>
-              <Text style={styles.settingIcon}>📅</Text>
+              <View
+                style={{ width: 24, marginRight: 12, alignItems: "center" }}
+              >
+                <AppSymbol
+                  name="calendar"
+                  size={20}
+                  color={theme.text}
+                  fallback={
+                    <Text style={[styles.settingIcon, { color: theme.text }]}>
+                      📅
+                    </Text>
+                  }
+                />
+              </View>
               <Text style={[styles.settingText, { color: theme.text }]}>
                 Calendar
               </Text>

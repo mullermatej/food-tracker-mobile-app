@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Animated } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { formatDate } from "../../utils/dateUtils";
+import AppSymbol from "./AppSymbol";
 
 const styles = {
   header: {
@@ -49,14 +50,30 @@ export const TodayHeader = ({ onSettingsPress, onNotesPress }) => {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Open food notes"
         >
-          <Animated.Text
-            style={[
-              styles.settingsIcon,
-              { color: theme.animated?.textSecondary || theme.textSecondary },
-            ]}
+          <Animated.View
+            style={{ opacity: 1 }}
+            accessibilityLabel="Open food notes"
+            accessible
           >
-            📝
-          </Animated.Text>
+            <AppSymbol
+              name="note.text"
+              size={24}
+              color={theme.textSecondary}
+              fallback={
+                <Animated.Text
+                  style={[
+                    styles.settingsIcon,
+                    {
+                      color:
+                        theme.animated?.textSecondary || theme.textSecondary,
+                    },
+                  ]}
+                >
+                  📝
+                </Animated.Text>
+              }
+            />
+          </Animated.View>
         </TouchableOpacity>
         <Animated.Text
           style={[
@@ -75,14 +92,31 @@ export const TodayHeader = ({ onSettingsPress, onNotesPress }) => {
           style={styles.settingsButton}
           onPress={onSettingsPress}
         >
-          <Animated.Text
-            style={[
-              styles.settingsIcon,
-              { color: theme.animated?.textSecondary || theme.textSecondary },
-            ]}
+          {/* iOS: SF Symbol; Android: emoji fallback */}
+          <Animated.View
+            style={{ opacity: 1 }}
+            accessibilityLabel="Open settings"
+            accessible
           >
-            ⚙️
-          </Animated.Text>
+            <AppSymbol
+              name="gearshape"
+              size={24}
+              color={theme.textSecondary}
+              fallback={
+                <Animated.Text
+                  style={[
+                    styles.settingsIcon,
+                    {
+                      color:
+                        theme.animated?.textSecondary || theme.textSecondary,
+                    },
+                  ]}
+                >
+                  ⚙️
+                </Animated.Text>
+              }
+            />
+          </Animated.View>
         </TouchableOpacity>
       </View>
       <Animated.Text

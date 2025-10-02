@@ -19,6 +19,7 @@ import {
   endOfMonth,
   eachDayOfInterval,
   isSameDay,
+  isSameMonth,
   addMonths,
   subMonths,
   isToday,
@@ -63,6 +64,13 @@ export const CalendarModal = ({
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const goToToday = () => {
     const today = new Date();
+    if (isSameMonth(currentMonth, today)) {
+      // Already viewing today's month: skip animation but still select today
+      setCurrentMonth(today);
+      onDateSelect && onDateSelect(today);
+      return;
+    }
+    // Different month: animate grid fade out/in
     Animated.timing(gridAnim, {
       toValue: 0,
       duration: 120,
