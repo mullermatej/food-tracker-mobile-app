@@ -130,7 +130,11 @@ export const FavouritesScreen = ({ navigation }) => {
         1
       : 1;
     const newItem = { id: newId, name, calories, protein };
-    setFavourites((prev) => [...prev, newItem]);
+    setFavourites((prev) => {
+      const next = [...prev, newItem];
+      saveData("favourites", next);
+      return next;
+    });
     closeAddModal();
   };
 
