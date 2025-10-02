@@ -392,7 +392,7 @@ export const CalendarModal = ({
           { backgroundColor: theme.background },
         ]}
       >
-        <StatusBar style={theme === lightTheme ? "dark" : "light"} />
+        <StatusBar style={theme?.background === "#f8f9fa" ? "dark" : "light"} />
 
         {/* Modal Header */}
         <View

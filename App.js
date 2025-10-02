@@ -22,6 +22,7 @@ import { ResetButton } from "./src/components/ui/ResetButton";
 import { CalendarModal } from "./src/components/calendar/CalendarModal";
 import { SettingsModal } from "./src/components/ui/SettingsModal";
 import { FavouritesScreen } from "./src/components/FavouritesScreen";
+import { InputPrompt } from "./src/components/ui/InputPrompt";
 
 // Styles
 import { globalStyles } from "./src/styles/globalStyles";
@@ -40,6 +41,9 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
+  const [prompt, setPrompt] = useState(null); // { type: 'calories'|'protein' }
+  const [caloriesStr, setCaloriesStr] = useState("");
+  const [proteinStr, setProteinStr] = useState("");
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
   const { saveData } = useLocalStorage();
@@ -114,53 +118,36 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   };
 
   const addCalories = () => {
-    Alert.prompt(
-      "Add Calories",
-      "Enter the amount to add",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Add",
-          onPress: (value) => {
-            const amount = parseInt(value) || 0;
-            if (amount > 0) {
-              nutritionData.updateTodayData({
-                calories: Math.max(0, todayData.calories + amount),
-              });
-              triggerLightHaptic();
-            }
-          },
-        },
-      ],
-      "plain-text",
-      "",
-      "number-pad"
-    );
+    setCaloriesStr("");
+    setPrompt({ type: "calories" });
   };
 
   const addProtein = () => {
-    Alert.prompt(
-      "Add Protein",
-      "Enter grams to add",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Add",
-          onPress: (value) => {
-            const amount = parseDecimalInput(value);
-            if (amount > 0) {
-              nutritionData.updateTodayData({
-                protein: Math.max(0, todayData.protein + amount),
-              });
-              triggerLightHaptic();
-            }
-          },
-        },
-      ],
-      "plain-text",
-      "",
-      Platform.OS === "ios" ? "decimal-pad" : "numeric"
-    );
+    setProteinStr("");
+    setPrompt({ type: "protein" });
+  };
+
+  const closePrompt = () => setPrompt(null);
+  const submitPrompt = () => {
+    if (!prompt) return;
+    if (prompt.type === "calories") {
+      const amount = parseInt(caloriesStr, 10) || 0;
+      if (amount > 0) {
+        nutritionData.updateTodayData({
+          calories: Math.max(0, todayData.calories + amount),
+        });
+        triggerLightHaptic();
+      }
+    } else if (prompt.type === "protein") {
+      const amount = parseDecimalInput(proteinStr);
+      if (amount > 0) {
+        nutritionData.updateTodayData({
+          protein: Math.max(0, todayData.protein + amount),
+        });
+        triggerLightHaptic();
+      }
+    }
+    closePrompt();
   };
 
   const toggleCreatine = () => {
@@ -300,6 +287,28 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             onToggleTheme={toggleTheme}
             onOpenCalendar={openCalendar}
             isDarkMode={isDarkMode}
+          />
+
+          {/* Cross-platform input prompt for Android/iOS/web */}
+          <InputPrompt
+            visible={!!prompt && prompt.type === "calories"}
+            title="Add Calories"
+            placeholder="Enter the amount to add"
+            value={caloriesStr}
+            onChangeText={setCaloriesStr}
+            keyboardType={Platform.OS === "ios" ? "number-pad" : "numeric"}
+            onCancel={closePrompt}
+            onSubmit={submitPrompt}
+          />
+          <InputPrompt
+            visible={!!prompt && prompt.type === "protein"}
+            title="Add Protein"
+            placeholder="Enter grams to add"
+            value={proteinStr}
+            onChangeText={setProteinStr}
+            keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
+            onCancel={closePrompt}
+            onSubmit={submitPrompt}
           />
         </SafeAreaView>
       </SafeAreaProvider>

@@ -152,7 +152,7 @@ export const SettingsModal = ({
       onRequestClose={onClose}
     >
       <View style={styles.modalContainer}>
-        <StatusBar style={theme === lightTheme ? "dark" : "light"} />
+        <StatusBar style={theme?.background === "#f8f9fa" ? "dark" : "light"} />
 
         <TouchableOpacity
           style={{ flex: 1 }}
