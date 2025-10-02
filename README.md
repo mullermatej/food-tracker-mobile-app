@@ -4,16 +4,35 @@ A modern React Native mobile app for tracking daily nutrition intake with an int
 
 ## ✨ Features
 
+- Track daily calories and protein intake
+- Calendar modal with date navigation and data editing
+- Supplement tracking (creatine, fish oil)
+- Light/Dark theme with animated transitions
+- Local data persistence with AsyncStorage
+- Favourites list with quick add
+
 ## 📸 Screenshots
 
-![Home screen (light)](assets/IMG_1332.png)
-![Home screen (dark)](assets/IMG_1333.png)
-![Calendar modal](assets/IMG_1334.png)
-![Favourites screen](assets/IMG_1335.png)
-![Add favourite item](assets/IMG_1336.png)
-![Supplements section](assets/IMG_1337.png)
-![Settings modal](assets/IMG_1338.png)
-![Theme transition](assets/IMG_1339.png)
+<!-- markdownlint-disable MD033 -->
+<table>
+   <tr>
+      <td><img src="assets/IMG_1332.png" alt="Home screen (light)" width="220" /></td>
+      <td><img src="assets/IMG_1333.png" alt="Home screen (dark)" width="220" /></td>
+      <td><img src="assets/IMG_1334.png" alt="Calendar modal" width="220" /></td>
+      <td><img src="assets/IMG_1335.png" alt="Favourites screen" width="220" /></td>
+   </tr>
+   <tr>
+      <td><img src="assets/IMG_1336.png" alt="Add favourite item" width="220" /></td>
+      <td><img src="assets/IMG_1337.png" alt="Supplements section" width="220" /></td>
+      <td><img src="assets/IMG_1338.png" alt="Settings modal" width="220" /></td>
+      <td><img src="assets/IMG_1339.png" alt="Theme transition" width="220" /></td>
+   </tr>
+   <tr>
+      <td colspan="4" align="center"><em>Tap to zoom when viewing on GitHub</em></td>
+   </tr>
+  
+</table>
+<!-- markdownlint-enable MD033 -->
 
 ## 🚀 Testing
 
