@@ -22,6 +22,7 @@ import { ResetButton } from "./src/components/ui/ResetButton";
 import { CalendarModal } from "./src/components/calendar/CalendarModal";
 import { SettingsModal } from "./src/components/ui/SettingsModal";
 import { FavouritesScreen } from "./src/components/FavouritesScreen";
+import { FoodNotesScreen } from "./src/components/FoodNotesScreen";
 import { InputPrompt } from "./src/components/ui/InputPrompt";
 
 // Styles
@@ -115,6 +116,11 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
 
   const openFavourites = () => {
     navigation.navigate("Favourites");
+  };
+
+  const openFoodNotes = () => {
+    navigation.navigate("FoodNotes");
+    triggerLightHaptic();
   };
 
   const addCalories = () => {
@@ -254,7 +260,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             contentContainerStyle={globalStyles.content}
             showsVerticalScrollIndicator={false}
           >
-            <TodayHeader onSettingsPress={openSettings} />
+            <TodayHeader onSettingsPress={openSettings} onNotesPress={openFoodNotes} />
 
             <NutritionCard todayData={todayData} />
 
@@ -361,6 +367,11 @@ export default function App() {
             options={{
               headerShown: false,
             }}
+          />
+          <Stack.Screen
+            name="FoodNotes"
+            component={FoodNotesScreen}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

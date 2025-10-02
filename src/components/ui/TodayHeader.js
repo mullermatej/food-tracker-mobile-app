@@ -37,13 +37,27 @@ const styles = {
   },
 };
 
-export const TodayHeader = ({ onSettingsPress }) => {
+export const TodayHeader = ({ onSettingsPress, onNotesPress }) => {
   const theme = useTheme();
 
   return (
     <View style={styles.header}>
       <View style={styles.headerTop}>
-        <View style={{ width: 32 }} />
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={onNotesPress}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          accessibilityLabel="Open food notes"
+        >
+          <Animated.Text
+            style={[
+              styles.settingsIcon,
+              { color: theme.animated?.textSecondary || theme.textSecondary },
+            ]}
+          >
+            📝
+          </Animated.Text>
+        </TouchableOpacity>
         <Animated.Text
           style={[
             styles.dateText,
