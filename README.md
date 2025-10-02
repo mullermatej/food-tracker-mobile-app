@@ -4,12 +4,16 @@ A modern React Native mobile app for tracking daily nutrition intake with an int
 
 ## ✨ Features
 
-- 📊 Track daily calories and protein intake
-- 📅 Calendar modal with date navigation and data editing
-- 💊 Supplement tracking system
-- 🌙 Theme support (light/dark modes)
-- 📱 Clean, mobile-responsive design
-- 💾 Local data persistence
+## 📸 Screenshots
+
+![Home screen (light)](assets/IMG_1332.png)
+![Home screen (dark)](assets/IMG_1333.png)
+![Calendar modal](assets/IMG_1334.png)
+![Favourites screen](assets/IMG_1335.png)
+![Add favourite item](assets/IMG_1336.png)
+![Supplements section](assets/IMG_1337.png)
+![Settings modal](assets/IMG_1338.png)
+![Theme transition](assets/IMG_1339.png)
 
 ## 🚀 Testing
 
@@ -67,7 +71,7 @@ Then open this link on your phone:
 
 ## 🏗️ Project Structure
 
-```
+```text
 food-tracker-app/
 ├── src/
 │ ├── components/ # Reusable UI components
