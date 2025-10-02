@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,10 +13,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
 import { emit } from "../utils/eventBus";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 import {
   parseDecimalInput,
   formatDecimalWithComma,
 } from "../utils/numberFormat";
+import { triggerLightHaptic, triggerWarningHaptic } from "../utils/haptics";
 
 const DUMMY_FAVOURITES = [
   {
@@ -52,6 +54,31 @@ export const FavouritesScreen = ({ navigation }) => {
   const [newName, setNewName] = useState("");
   const [newCalories, setNewCalories] = useState("");
   const [newProtein, setNewProtein] = useState("");
+  const { saveData, loadData } = useLocalStorage();
+
+  // Load favourites from storage on mount; seed defaults if none
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const stored = await loadData("favourites");
+        if (!mounted) return;
+        if (stored && Array.isArray(stored)) {
+          setFavourites(stored);
+        } else {
+          setFavourites(DUMMY_FAVOURITES);
+          // Seed defaults so subsequent launches use storage
+          saveData("favourites", DUMMY_FAVOURITES);
+        }
+      } catch (e) {
+        // On error, keep current state (defaults) and continue
+        console.error("Failed to load favourites:", e);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleRemoveItem = (id) => {
     Alert.alert(
@@ -63,7 +90,12 @@ export const FavouritesScreen = ({ navigation }) => {
           text: "Remove",
           style: "destructive",
           onPress: () => {
-            setFavourites(favourites.filter((item) => item.id !== id));
+            setFavourites((prev) => {
+              const next = prev.filter((item) => item.id !== id);
+              saveData("favourites", next);
+              return next;
+            });
+            triggerLightHaptic();
           },
         },
       ]
@@ -88,6 +120,7 @@ export const FavouritesScreen = ({ navigation }) => {
     const name = newName.trim();
     if (!name) {
       Alert.alert("Missing name", "Please enter a food name.");
+      triggerWarningHaptic();
       return;
     }
     const calories = Number(newCalories) || 0;
