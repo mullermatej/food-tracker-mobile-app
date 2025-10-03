@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { useLocalStorage } from "./useLocalStorage";
 
 export const useNutritionData = () => {
   const [data, setData] = useState({});
   const { saveData, loadData } = useLocalStorage();
+  // Track when initial storage has been loaded to avoid overwriting history
+  const isLoadedRef = useRef(false);
 
   const getTodayKey = () => format(new Date(), "yyyy-MM-dd");
 
@@ -20,17 +22,31 @@ export const useNutritionData = () => {
     );
   };
 
-  const updateTodayData = (updates) => {
+  const updateTodayData = async (updates) => {
     const today = getTodayKey();
-    const newData = {
-      ...data,
+    // If initial load isn't done yet, merge with persisted storage to avoid wiping history
+    let base = data;
+    if (!isLoadedRef.current) {
+      const stored = await loadData("nutritionData");
+      if (stored && typeof stored === "object") {
+        base = { ...stored, ...base };
+      }
+    }
+    const prevToday = base[today] || {
+      calories: 0,
+      protein: 0,
+      creatine: false,
+      fishOil: false,
+    };
+    const nextData = {
+      ...base,
       [today]: {
-        ...getTodayData(),
+        ...prevToday,
         ...updates,
       },
     };
-    setData(newData);
-    saveData("nutritionData", newData);
+    setData(nextData);
+    saveData("nutritionData", nextData);
   };
 
   const getDataForDate = (date) => {
@@ -45,31 +61,41 @@ export const useNutritionData = () => {
     );
   };
 
-  const updateDataForDate = (date, updates) => {
+  const updateDataForDate = async (date, updates) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    const prev = data[dateKey] || {
+    // If initial load isn't done yet, merge with persisted storage to avoid wiping history
+    let base = data;
+    if (!isLoadedRef.current) {
+      const stored = await loadData("nutritionData");
+      if (stored && typeof stored === "object") {
+        base = { ...stored, ...base };
+      }
+    }
+    const prev = base[dateKey] || {
       calories: 0,
       protein: 0,
       creatine: false,
       fishOil: false,
     };
-    const newData = {
-      ...data,
+    const nextData = {
+      ...base,
       [dateKey]: {
         ...prev,
         ...updates,
       },
     };
-    setData(newData);
-    saveData("nutritionData", newData);
+    setData(nextData);
+    saveData("nutritionData", nextData);
   };
 
   useEffect(() => {
     const loadInitialData = async () => {
       const stored = await loadData("nutritionData");
-      if (stored) {
-        setData(stored);
+      if (stored && typeof stored === "object") {
+        // Merge any optimistic updates done before load completed
+        setData((prev) => ({ ...stored, ...prev }));
       }
+      isLoadedRef.current = true;
     };
     loadInitialData();
   }, []);
