@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   Pressable,
   Platform,
+  Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
@@ -50,6 +51,7 @@ const DUMMY_FAVOURITES = [
 
 export const FavouritesScreen = ({ navigation }) => {
   const theme = useTheme();
+  const listRef = useRef(null);
   const [favourites, setFavourites] = useState(DUMMY_FAVOURITES);
   const [sortVisible, setSortVisible] = useState(false);
   const [sortMode, setSortMode] = useState("recent"); // 'recent' | 'alpha'
@@ -57,7 +59,9 @@ export const FavouritesScreen = ({ navigation }) => {
   const [newName, setNewName] = useState("");
   const [newCalories, setNewCalories] = useState("");
   const [newProtein, setNewProtein] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { saveData, loadData } = useLocalStorage();
+  const scrollFabAnim = useRef(new Animated.Value(0)).current; // 0 hidden, 1 visible
 
   // Load favourites from storage on mount; seed defaults if none
   useEffect(() => {
@@ -100,6 +104,15 @@ export const FavouritesScreen = ({ navigation }) => {
   useEffect(() => {
     setFavourites((prev) => applySort(prev));
   }, [sortMode]);
+
+  // Animate scroll-to-top button visibility
+  useEffect(() => {
+    Animated.timing(scrollFabAnim, {
+      toValue: showScrollTop ? 1 : 0,
+      duration: showScrollTop ? 180 : 140,
+      useNativeDriver: true,
+    }).start();
+  }, [showScrollTop, scrollFabAnim]);
 
   const handleRemoveItem = (id) => {
     Alert.alert(
@@ -201,6 +214,18 @@ export const FavouritesScreen = ({ navigation }) => {
       textAlign: "center",
       flex: 1,
     },
+    sideLeft: {
+      width: 72, // match right side width so title is truly centered
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-start",
+    },
+    headerRight: {
+      width: 72, // match left side width
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+    },
     iconButton: {
       width: 32,
       height: 32,
@@ -291,6 +316,57 @@ export const FavouritesScreen = ({ navigation }) => {
       borderColor: theme.border,
       padding: 16,
     },
+    sortOptionsWrap: { marginTop: 4 },
+    optionCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: theme.cardBackground,
+      borderRadius: 14,
+      padding: 12,
+      marginTop: 8,
+    },
+    optionCardActive: {
+      borderColor: theme.primary,
+      backgroundColor: theme.primary + "10",
+    },
+    optionIconWrap: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.background,
+      borderWidth: 1,
+      borderColor: theme.border,
+      marginRight: 12,
+    },
+    optionTextWrap: { flex: 1 },
+    optionTitle: { fontSize: 16, fontWeight: "600", color: theme.text },
+    optionSubtitle: { fontSize: 12, color: theme.textSecondary, marginTop: 2 },
+    optionRight: { marginLeft: 12 },
+    optionCheck: {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: "transparent",
+    },
+    optionCheckActive: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    closeLink: {
+      alignSelf: "center",
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      marginTop: 8,
+    },
+    closeLinkText: { color: theme.textSecondary, fontWeight: "600" },
     modalTitle: {
       fontSize: 18,
       fontWeight: "700",
@@ -328,51 +404,100 @@ export const FavouritesScreen = ({ navigation }) => {
       alignItems: "center",
     },
     confirmText: { color: "#fff", fontWeight: "700" },
+    scrollTopButton: {
+      position: "absolute",
+      right: 24,
+      bottom: 24,
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.cardBackground,
+      borderWidth: 1,
+      borderColor: theme.border,
+      shadowColor: theme.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 4,
+    },
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.backHit,
-              pressed && { backgroundColor: theme.primary + "10" },
-            ]}
-            onPress={() => navigation.goBack()}
-            android_ripple={{ color: theme.primary + "20", borderless: false }}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-          >
-            <Text style={styles.backText}>←</Text>
-          </Pressable>
+          <View style={styles.sideLeft}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.backHit,
+                pressed && { backgroundColor: theme.primary + "10" },
+              ]}
+              onPress={() => navigation.goBack()}
+              android_ripple={{
+                color: theme.primary + "20",
+                borderless: false,
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+            >
+              <Text style={styles.backText}>←</Text>
+            </Pressable>
+          </View>
           <Text style={styles.title}>Favourites</Text>
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => setSortVisible(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Sort favourites"
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <AppSymbol
-              name="arrow.up.arrow.down"
-              size={24}
-              color={theme.textSecondary}
-              fallback={
-                <Text style={{ fontSize: 16, color: theme.textSecondary }}>
-                  ↕️
-                </Text>
-              }
-            />
-          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={openAddModal}
+              accessibilityRole="button"
+              accessibilityLabel="Add favourite"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <AppSymbol
+                name="plus"
+                size={24}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 18, color: theme.textSecondary }}>
+                    +
+                  </Text>
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.iconButton, { marginLeft: 8 }]}
+              onPress={() => setSortVisible(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Sort favourites"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <AppSymbol
+                name="arrow.up.arrow.down"
+                size={24}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 16, color: theme.textSecondary }}>
+                    ↕️
+                  </Text>
+                }
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
       <FlatList
+        ref={listRef}
         data={favourites}
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.listContent}
+        onScroll={({ nativeEvent }) => {
+          const y = nativeEvent?.contentOffset?.y || 0;
+          setShowScrollTop(y > 140);
+        }}
+        scrollEventThrottle={16}
         ListEmptyComponent={
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyEmoji}>⭐</Text>
@@ -415,18 +540,47 @@ export const FavouritesScreen = ({ navigation }) => {
             </View>
           </View>
         )}
-        ListFooterComponent={
-          favourites.length > 0 ? (
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={openAddModal}
-            >
-              <Text style={styles.primaryButtonText}>Add favourite</Text>
-            </TouchableOpacity>
-          ) : null
-        }
+        ListFooterComponent={null}
         showsVerticalScrollIndicator={false}
       />
+
+      <Animated.View
+        pointerEvents={showScrollTop ? "auto" : "none"}
+        style={[
+          styles.scrollTopButton,
+          {
+            opacity: scrollFabAnim,
+            transform: [
+              {
+                translateY: scrollFabAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [12, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            listRef.current?.scrollToOffset?.({ offset: 0, animated: true })
+          }
+          accessibilityRole="button"
+          accessibilityLabel="Scroll to top"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <AppSymbol
+            name="chevron.up"
+            size={22}
+            color={theme.textSecondary}
+            fallback={
+              <Text style={{ fontSize: 18, color: theme.textSecondary }}>
+                ↑
+              </Text>
+            }
+          />
+        </TouchableOpacity>
+      </Animated.View>
 
       <Modal
         visible={isAddOpen}
@@ -501,57 +655,121 @@ export const FavouritesScreen = ({ navigation }) => {
           />
           <View style={styles.addModalCard}>
             <Text style={styles.modalTitle}>Sort by</Text>
+            <View style={styles.sortOptionsWrap}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[
+                  styles.optionCard,
+                  sortMode === "recent" && styles.optionCardActive,
+                ]}
+                onPress={() => {
+                  setSortMode("recent");
+                  setFavourites((prev) => {
+                    const sorted = applySort(prev);
+                    saveData("favourites", sorted);
+                    return sorted;
+                  });
+                  setSortVisible(false);
+                }}
+              >
+                <View style={styles.optionIconWrap}>
+                  <AppSymbol
+                    name="clock"
+                    size={18}
+                    color={theme.textSecondary}
+                    fallback={
+                      <Text
+                        style={{ fontSize: 16, color: theme.textSecondary }}
+                      >
+                        🕒
+                      </Text>
+                    }
+                  />
+                </View>
+                <View style={styles.optionTextWrap}>
+                  <Text style={styles.optionTitle}>Recently added</Text>
+                  <Text style={styles.optionSubtitle}>Newest items first</Text>
+                </View>
+                <View style={styles.optionRight}>
+                  <View
+                    style={[
+                      styles.optionCheck,
+                      sortMode === "recent" && styles.optionCheckActive,
+                    ]}
+                  >
+                    {sortMode === "recent" ? (
+                      <AppSymbol
+                        name="checkmark"
+                        size={14}
+                        color="#fff"
+                        fallback={<Text style={{ color: "#fff" }}>✓</Text>}
+                      />
+                    ) : null}
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[
+                  styles.optionCard,
+                  sortMode === "alpha" && styles.optionCardActive,
+                ]}
+                onPress={() => {
+                  setSortMode("alpha");
+                  setFavourites((prev) => {
+                    const sorted = applySort(prev);
+                    saveData("favourites", sorted);
+                    return sorted;
+                  });
+                  setSortVisible(false);
+                }}
+              >
+                <View style={styles.optionIconWrap}>
+                  <AppSymbol
+                    name="textformat"
+                    size={18}
+                    color={theme.textSecondary}
+                    fallback={
+                      <Text
+                        style={{ fontSize: 16, color: theme.textSecondary }}
+                      >
+                        A
+                      </Text>
+                    }
+                  />
+                </View>
+                <View style={styles.optionTextWrap}>
+                  <Text style={styles.optionTitle}>Alphabetical</Text>
+                  <Text style={styles.optionSubtitle}>A → Z by name</Text>
+                </View>
+                <View style={styles.optionRight}>
+                  <View
+                    style={[
+                      styles.optionCheck,
+                      sortMode === "alpha" && styles.optionCheckActive,
+                    ]}
+                  >
+                    {sortMode === "alpha" ? (
+                      <AppSymbol
+                        name="checkmark"
+                        size={14}
+                        color="#fff"
+                        fallback={<Text style={{ color: "#fff" }}>✓</Text>}
+                      />
+                    ) : null}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
-              style={[
-                styles.primaryButton,
-                {
-                  backgroundColor: theme.cardBackground,
-                  borderWidth: 1,
-                  borderColor: theme.border,
-                },
-              ]}
-              onPress={() => {
-                setSortMode("recent");
-                setFavourites((prev) => {
-                  const sorted = applySort(prev);
-                  saveData("favourites", sorted);
-                  return sorted;
-                });
-                setSortVisible(false);
-              }}
-            >
-              <Text style={[styles.secondaryText, { fontWeight: "700" }]}>
-                Recently added
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.primaryButton,
-                {
-                  backgroundColor: theme.cardBackground,
-                  borderWidth: 1,
-                  borderColor: theme.border,
-                },
-              ]}
-              onPress={() => {
-                setSortMode("alpha");
-                setFavourites((prev) => {
-                  const sorted = applySort(prev);
-                  saveData("favourites", sorted);
-                  return sorted;
-                });
-                setSortVisible(false);
-              }}
-            >
-              <Text style={[styles.secondaryText, { fontWeight: "700" }]}>
-                Alphabetical
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.secondaryButton, { marginTop: 8 }]}
+              style={styles.closeLink}
               onPress={() => setSortVisible(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Close sort options"
             >
-              <Text style={styles.secondaryText}>Close</Text>
+              <Text style={styles.closeLinkText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
