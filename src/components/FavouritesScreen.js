@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
 import { emit } from "../utils/eventBus";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import AppSymbol from "./ui/AppSymbol";
 import {
   parseDecimalInput,
   formatDecimalWithComma,
@@ -50,6 +51,8 @@ const DUMMY_FAVOURITES = [
 export const FavouritesScreen = ({ navigation }) => {
   const theme = useTheme();
   const [favourites, setFavourites] = useState(DUMMY_FAVOURITES);
+  const [sortVisible, setSortVisible] = useState(false);
+  const [sortMode, setSortMode] = useState("recent"); // 'recent' | 'alpha'
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newCalories, setNewCalories] = useState("");
@@ -64,9 +67,9 @@ export const FavouritesScreen = ({ navigation }) => {
         const stored = await loadData("favourites");
         if (!mounted) return;
         if (stored && Array.isArray(stored)) {
-          setFavourites(stored);
+          setFavourites(applySort(stored));
         } else {
-          setFavourites(DUMMY_FAVOURITES);
+          setFavourites(applySort(DUMMY_FAVOURITES));
           // Seed defaults so subsequent launches use storage
           saveData("favourites", DUMMY_FAVOURITES);
         }
@@ -80,6 +83,24 @@ export const FavouritesScreen = ({ navigation }) => {
     };
   }, []);
 
+  function applySort(list) {
+    const copy = [...(list || [])];
+    if (sortMode === "alpha") {
+      return copy.sort((a, b) =>
+        (a?.name || "")
+          .toLowerCase()
+          .localeCompare((b?.name || "").toLowerCase())
+      );
+    }
+    // recent: newest first (assumes larger id == newer)
+    return copy.sort((a, b) => (b?.id || 0) - (a?.id || 0));
+  }
+
+  // Re-apply sort if mode changes
+  useEffect(() => {
+    setFavourites((prev) => applySort(prev));
+  }, [sortMode]);
+
   const handleRemoveItem = (id) => {
     Alert.alert(
       "Remove Item",
@@ -92,8 +113,9 @@ export const FavouritesScreen = ({ navigation }) => {
           onPress: () => {
             setFavourites((prev) => {
               const next = prev.filter((item) => item.id !== id);
-              saveData("favourites", next);
-              return next;
+              const sorted = applySort(next);
+              saveData("favourites", sorted);
+              return sorted;
             });
             triggerLightHaptic();
           },
@@ -132,8 +154,9 @@ export const FavouritesScreen = ({ navigation }) => {
     const newItem = { id: newId, name, calories, protein };
     setFavourites((prev) => {
       const next = [...prev, newItem];
-      saveData("favourites", next);
-      return next;
+      const sorted = applySort(next);
+      saveData("favourites", sorted);
+      return sorted;
     });
     closeAddModal();
   };
@@ -177,6 +200,14 @@ export const FavouritesScreen = ({ navigation }) => {
       color: theme.text,
       textAlign: "center",
       flex: 1,
+    },
+    iconButton: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(128, 128, 128, 0.1)",
     },
     listContent: {
       paddingHorizontal: 24,
@@ -317,7 +348,24 @@ export const FavouritesScreen = ({ navigation }) => {
             <Text style={styles.backText}>←</Text>
           </Pressable>
           <Text style={styles.title}>Favourites</Text>
-          <View style={{ width: 36 }} />
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => setSortVisible(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Sort favourites"
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <AppSymbol
+              name="arrow.up.arrow.down"
+              size={24}
+              color={theme.textSecondary}
+              fallback={
+                <Text style={{ fontSize: 16, color: theme.textSecondary }}>
+                  ↕️
+                </Text>
+              }
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -435,6 +483,76 @@ export const FavouritesScreen = ({ navigation }) => {
                 <Text style={styles.confirmText}>Add</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Sort Options Modal */}
+      <Modal
+        visible={sortVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSortVisible(false)}
+      >
+        <View style={styles.addModalOverlay}>
+          <Pressable
+            style={styles.overlayDismiss}
+            onPress={() => setSortVisible(false)}
+          />
+          <View style={styles.addModalCard}>
+            <Text style={styles.modalTitle}>Sort by</Text>
+            <TouchableOpacity
+              style={[
+                styles.primaryButton,
+                {
+                  backgroundColor: theme.cardBackground,
+                  borderWidth: 1,
+                  borderColor: theme.border,
+                },
+              ]}
+              onPress={() => {
+                setSortMode("recent");
+                setFavourites((prev) => {
+                  const sorted = applySort(prev);
+                  saveData("favourites", sorted);
+                  return sorted;
+                });
+                setSortVisible(false);
+              }}
+            >
+              <Text style={[styles.secondaryText, { fontWeight: "700" }]}>
+                Recently added
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.primaryButton,
+                {
+                  backgroundColor: theme.cardBackground,
+                  borderWidth: 1,
+                  borderColor: theme.border,
+                },
+              ]}
+              onPress={() => {
+                setSortMode("alpha");
+                setFavourites((prev) => {
+                  const sorted = applySort(prev);
+                  saveData("favourites", sorted);
+                  return sorted;
+                });
+                setSortVisible(false);
+              }}
+            >
+              <Text style={[styles.secondaryText, { fontWeight: "700" }]}>
+                Alphabetical
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.secondaryButton, { marginTop: 8 }]}
+              onPress={() => setSortVisible(false)}
+            >
+              <Text style={styles.secondaryText}>Close</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
