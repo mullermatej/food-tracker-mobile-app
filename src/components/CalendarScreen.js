@@ -28,7 +28,10 @@ import {
 import { useTheme } from "../context/ThemeContext";
 import { useNutritionData } from "../hooks/useNutritionData";
 import { calendarStyles } from "../styles/calendarStyles";
-import { formatDecimalWithComma, parseDecimalInput } from "../utils/numberFormat";
+import {
+  formatDecimalWithComma,
+  parseDecimalInput,
+} from "../utils/numberFormat";
 
 export const CalendarScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -252,7 +255,9 @@ export const CalendarScreen = ({ navigation }) => {
 
         <View style={entryStyles.divider} />
 
-        <Text style={[entryStyles.label, { marginBottom: 4 }]}>Supplements</Text>
+        <Text style={[entryStyles.label, { marginBottom: 4 }]}>
+          Supplements
+        </Text>
         <View style={entryStyles.supRow}>
           <Chip active={!!dayData.creatine} label="Creatine" />
           <Chip active={!!dayData.fishOil} label="Fish Oil" />
@@ -446,8 +451,13 @@ export const CalendarScreen = ({ navigation }) => {
 
       {/* Month Navigation */}
       <View style={calendarStyles.monthNavigation}>
-        <TouchableOpacity onPress={previousMonth} style={calendarStyles.navButton}>
-          <Text style={[calendarStyles.navButtonText, { color: theme.primary }]}>
+        <TouchableOpacity
+          onPress={previousMonth}
+          style={calendarStyles.navButton}
+        >
+          <Text
+            style={[calendarStyles.navButtonText, { color: theme.primary }]}
+          >
             ‹
           </Text>
         </TouchableOpacity>
@@ -460,7 +470,9 @@ export const CalendarScreen = ({ navigation }) => {
           {format(currentMonth, "MMMM yyyy")}
         </Animated.Text>
         <TouchableOpacity onPress={nextMonth} style={calendarStyles.navButton}>
-          <Text style={[calendarStyles.navButtonText, { color: theme.primary }]}>
+          <Text
+            style={[calendarStyles.navButtonText, { color: theme.primary }]}
+          >
             ›
           </Text>
         </TouchableOpacity>
@@ -570,7 +582,9 @@ export const CalendarScreen = ({ navigation }) => {
                   value={proteinStr}
                   onChangeText={setProteinStr}
                   inputMode="decimal"
-                  keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
+                  keyboardType={
+                    Platform.OS === "ios" ? "decimal-pad" : "numeric"
+                  }
                 />
               </View>
 
@@ -653,7 +667,10 @@ export const CalendarScreen = ({ navigation }) => {
                 >
                   <Text style={editStyles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={editStyles.actionButton} onPress={saveEdit}>
+                <TouchableOpacity
+                  style={editStyles.actionButton}
+                  onPress={saveEdit}
+                >
                   <Text style={editStyles.actionText}>Save</Text>
                 </TouchableOpacity>
               </View>
