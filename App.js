@@ -23,7 +23,7 @@ import { NutritionCard } from "./src/components/ui/NutritionCard";
 import { AddButtons } from "./src/components/ui/AddButtons";
 import { SupplementSection } from "./src/components/ui/SupplementSection";
 import { ResetButton } from "./src/components/ui/ResetButton";
-import { CalendarModal } from "./src/components/calendar/CalendarModal";
+import CalendarScreen from "./src/components/CalendarScreen";
 import { SettingsModal } from "./src/components/ui/SettingsModal";
 import { FavouritesScreen } from "./src/components/FavouritesScreen";
 import { FoodNotesScreen } from "./src/components/FoodNotesScreen";
@@ -33,19 +33,13 @@ import { InputPrompt } from "./src/components/ui/InputPrompt";
 import { globalStyles } from "./src/styles/globalStyles";
 
 // Utils
-import {
-  triggerLightHaptic,
-  triggerMediumHaptic,
-  triggerWarningHaptic,
-} from "./src/utils/haptics";
+import { triggerLightHaptic, triggerMediumHaptic } from "./src/utils/haptics";
 import { parseDecimalInput } from "./src/utils/numberFormat";
 
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
-  const [calendarVisible, setCalendarVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
   const [prompt, setPrompt] = useState(null); // { type: 'calories'|'protein' }
   const [caloriesStr, setCaloriesStr] = useState("");
   const [proteinStr, setProteinStr] = useState("");
@@ -205,12 +199,8 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   };
 
   const openCalendar = () => {
-    setSelectedCalendarDate(new Date());
-    setCalendarVisible(true);
-  };
-
-  const handleDateSelect = (date) => {
-    setSelectedCalendarDate(date);
+    // Navigate to the dedicated Calendar screen instead of opening a modal
+    navigation.navigate("Calendar");
   };
 
   const openSettings = () => {
@@ -286,13 +276,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             <ResetButton onReset={resetToday} />
           </ScrollView>
 
-          <CalendarModal
-            visible={calendarVisible}
-            onClose={() => setCalendarVisible(false)}
-            nutritionData={nutritionData}
-            onDateSelect={handleDateSelect}
-            selectedDate={selectedCalendarDate}
-          />
+          {/* Calendar moved to its own screen; modal removed */}
 
           <SettingsModal
             visible={settingsVisible}
@@ -393,6 +377,11 @@ export default function App() {
           <Stack.Screen
             name="FoodNotes"
             component={FoodNotesScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Calendar"
+            component={CalendarScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
