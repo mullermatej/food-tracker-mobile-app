@@ -112,6 +112,7 @@ export const SettingsModal = ({
   onClose,
   onToggleTheme,
   onOpenCalendar,
+  onOpenAdmin,
   isDarkMode,
 }) => {
   const theme = useTheme();
@@ -141,6 +142,13 @@ export const SettingsModal = ({
 
   const handleCalendarOpen = () => {
     onOpenCalendar();
+    onClose();
+  };
+
+  const handleAdminOpen = () => {
+    if (onOpenAdmin) {
+      onOpenAdmin();
+    }
     onClose();
   };
 
@@ -262,6 +270,37 @@ export const SettingsModal = ({
             <View style={styles.viewButton}>
               <Text style={[styles.viewButtonText, { color: theme.text }]}>
                 View
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handleAdminOpen}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <View
+                style={{ width: 24, marginRight: 12, alignItems: "center" }}
+              >
+                <AppSymbol
+                  name="gearshape.2.fill"
+                  size={20}
+                  color={theme.text}
+                  fallback={
+                    <Text style={[styles.settingIcon, { color: theme.text }]}>
+                      🛠️
+                    </Text>
+                  }
+                />
+              </View>
+              <Text style={[styles.settingText, { color: theme.text }]}>
+                Admin
+              </Text>
+            </View>
+            <View style={styles.viewButton}>
+              <Text style={[styles.viewButtonText, { color: theme.text }]}>
+                Open
               </Text>
             </View>
           </TouchableOpacity>

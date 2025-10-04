@@ -28,12 +28,18 @@ import { SettingsModal } from "./src/components/ui/SettingsModal";
 import { FavouritesScreen } from "./src/components/FavouritesScreen";
 import { FoodNotesScreen } from "./src/components/FoodNotesScreen";
 import { InputPrompt } from "./src/components/ui/InputPrompt";
+import { AdminPasswordModal } from "./src/components/ui/AdminPasswordModal";
+import AdminScreen from "./src/components/AdminScreen";
 
 // Styles
 import { globalStyles } from "./src/styles/globalStyles";
 
 // Utils
-import { triggerLightHaptic, triggerMediumHaptic } from "./src/utils/haptics";
+import {
+  triggerLightHaptic,
+  triggerMediumHaptic,
+  triggerWarningHaptic,
+} from "./src/utils/haptics";
 import { parseDecimalInput } from "./src/utils/numberFormat";
 
 const Stack = createNativeStackNavigator();
@@ -43,6 +49,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const [prompt, setPrompt] = useState(null); // { type: 'calories'|'protein' }
   const [caloriesStr, setCaloriesStr] = useState("");
   const [proteinStr, setProteinStr] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
   const { saveData } = useLocalStorage();
@@ -154,6 +161,18 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
     closePrompt();
   };
 
+  const handleAdminPasswordSubmit = (pwd) => {
+    if (pwd === "1234") {
+      setAdminPassword("");
+      closePrompt();
+      navigation.navigate("Admin");
+      triggerLightHaptic();
+    } else {
+      Alert.alert("Incorrect password", "Please try again.");
+      triggerWarningHaptic();
+    }
+  };
+
   const toggleCreatine = () => {
     nutritionData.updateTodayData({
       creatine: !todayData.creatine,
@@ -201,6 +220,11 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const openCalendar = () => {
     // Navigate to the dedicated Calendar screen instead of opening a modal
     navigation.navigate("Calendar");
+  };
+
+  const openAdmin = () => {
+    setAdminPassword("");
+    setPrompt({ type: "admin-password" });
   };
 
   const openSettings = () => {
@@ -283,6 +307,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             onClose={closeSettings}
             onToggleTheme={toggleTheme}
             onOpenCalendar={openCalendar}
+            onOpenAdmin={openAdmin}
             isDarkMode={isDarkMode}
           />
 
@@ -306,6 +331,14 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
             onCancel={closePrompt}
             onSubmit={submitPrompt}
+          />
+          <AdminPasswordModal
+            visible={!!prompt && prompt.type === "admin-password"}
+            onCancel={() => {
+              setAdminPassword("");
+              closePrompt();
+            }}
+            onSubmit={handleAdminPasswordSubmit}
           />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -382,6 +415,11 @@ export default function App() {
           <Stack.Screen
             name="Calendar"
             component={CalendarScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Admin"
+            component={AdminScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

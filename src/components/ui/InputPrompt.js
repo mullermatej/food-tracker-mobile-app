@@ -22,6 +22,7 @@ export const InputPrompt = ({
   onSubmit,
   cancelLabel = "Cancel",
   submitLabel = "Add",
+  secureTextEntry = false,
 }) => {
   const theme = useTheme();
 
@@ -105,6 +106,7 @@ export const InputPrompt = ({
             value={value}
             onChangeText={onChangeText}
             keyboardType={keyboardType}
+            secureTextEntry={secureTextEntry}
             style={styles.input}
             autoFocus
             onSubmitEditing={onSubmit}
