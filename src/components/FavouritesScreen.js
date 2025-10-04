@@ -56,6 +56,9 @@ export const FavouritesScreen = ({ navigation }) => {
   const [sortVisible, setSortVisible] = useState(false);
   const [sortMode, setSortMode] = useState("recent"); // 'recent' | 'alpha'
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isMultiplyOpen, setIsMultiplyOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [multiplierStr, setMultiplierStr] = useState("1");
   const [newName, setNewName] = useState("");
   const [newCalories, setNewCalories] = useState("");
   const [newProtein, setNewProtein] = useState("");
@@ -137,10 +140,31 @@ export const FavouritesScreen = ({ navigation }) => {
     );
   };
 
-  const handleAddToToday = (item) => {
+  const openMultiplyModal = (item) => {
+    setSelectedItem(item);
+    setMultiplierStr("1");
+    setIsMultiplyOpen(true);
+  };
+
+  const closeMultiplyModal = () => {
+    setIsMultiplyOpen(false);
+    setSelectedItem(null);
+  };
+
+  const confirmMultiplyAdd = () => {
+    if (!selectedItem) return;
+    const mVal = parseDecimalInput(multiplierStr);
+    const m = isNaN(mVal) ? 0 : mVal;
+    const calories = Math.max(0, Math.round((selectedItem.calories || 0) * m));
+    const proteinRaw = Math.max(0, (selectedItem.protein || 0) * m);
+    const protein = Number(proteinRaw.toFixed(2));
     // Emit event so Home can update without leaving this screen
-    emit("add-from-favourites", item);
-    Alert.alert("Added", `${item.name} added to today.`);
+    emit("add-from-favourites", { calories, protein });
+    Alert.alert(
+      "Added",
+      `${selectedItem.name} × ${formatDecimalWithComma(m)} added to today.`
+    );
+    closeMultiplyModal();
   };
 
   const openAddModal = () => setIsAddOpen(true);
@@ -372,6 +396,7 @@ export const FavouritesScreen = ({ navigation }) => {
       fontWeight: "700",
       color: theme.text,
       marginBottom: 12,
+      textAlign: "center",
     },
     input: {
       borderWidth: 1,
@@ -526,7 +551,7 @@ export const FavouritesScreen = ({ navigation }) => {
               <View style={styles.actions}>
                 <TouchableOpacity
                   style={styles.addPill}
-                  onPress={() => handleAddToToday(item)}
+                  onPress={() => openMultiplyModal(item)}
                 >
                   <Text style={styles.addPillText}>Add</Text>
                 </TouchableOpacity>
@@ -637,6 +662,127 @@ export const FavouritesScreen = ({ navigation }) => {
                 <Text style={styles.confirmText}>Add</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Add with Multiplier Modal */}
+      <Modal
+        visible={isMultiplyOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={closeMultiplyModal}
+      >
+        <View style={styles.addModalOverlay}>
+          <Pressable
+            style={styles.overlayDismiss}
+            onPress={closeMultiplyModal}
+          />
+          <View style={styles.addModalCard}>
+            {selectedItem ? (
+              <>
+                <Text
+                  style={{
+                    color: theme.text,
+                    fontWeight: "700",
+                    marginBottom: 6,
+                  }}
+                >
+                  {selectedItem.name}
+                </Text>
+                <Text
+                  style={{
+                    color: theme.textSecondary,
+                    marginBottom: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  {selectedItem.calories} cal ·{" "}
+                  {formatDecimalWithComma(selectedItem.protein)}g protein
+                </Text>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 10,
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
+                  <TextInput
+                    value={multiplierStr}
+                    onChangeText={setMultiplierStr}
+                    inputMode="decimal"
+                    keyboardType={
+                      Platform.OS === "ios" ? "decimal-pad" : "numeric"
+                    }
+                    style={[
+                      styles.input,
+                      {
+                        marginBottom: 0,
+                        marginLeft: 8,
+                        width: 100,
+                        textAlign: "center",
+                        paddingVertical: 8,
+                      },
+                    ]}
+                    placeholder="1"
+                    placeholderTextColor={theme.textSecondary}
+                  />
+                </View>
+
+                {(() => {
+                  const mVal = parseDecimalInput(multiplierStr);
+                  const m = isNaN(mVal) ? 0 : mVal;
+                  const calcCalories = Math.max(
+                    0,
+                    Math.round((selectedItem.calories || 0) * m)
+                  );
+                  const calcProtein = Math.max(
+                    0,
+                    (selectedItem.protein || 0) * m
+                  );
+                  return (
+                    <View
+                      style={{
+                        marginTop: 6,
+                        marginBottom: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text
+                        style={{ color: theme.textSecondary, marginBottom: 4 }}
+                      >
+                        {selectedItem.calories} cal,{" "}
+                        {formatDecimalWithComma(selectedItem.protein)}g protein
+                        × {formatDecimalWithComma(m)}
+                      </Text>
+                      <Text style={{ color: theme.text, fontWeight: "700" }}>
+                        = {calcCalories} cal,{" "}
+                        {formatDecimalWithComma(Number(calcProtein.toFixed(2)))}
+                        g protein
+                      </Text>
+                    </View>
+                  );
+                })()}
+
+                <View style={styles.modalActions}>
+                  <TouchableOpacity
+                    style={styles.secondaryButton}
+                    onPress={closeMultiplyModal}
+                  >
+                    <Text style={styles.secondaryText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.confirmButton, { marginLeft: 8 }]}
+                    onPress={confirmMultiplyAdd}
+                  >
+                    <Text style={styles.confirmText}>Add</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : null}
           </View>
         </View>
       </Modal>
