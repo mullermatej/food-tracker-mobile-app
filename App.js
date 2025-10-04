@@ -16,6 +16,7 @@ import { lightTheme, darkTheme } from "./src/utils/themes";
 // Hooks
 import { useNutritionData } from "./src/hooks/useNutritionData";
 import { useLocalStorage } from "./src/hooks/useLocalStorage";
+import { useHistoryLog } from "./src/hooks/useHistoryLog";
 
 // Components
 import { TodayHeader } from "./src/components/ui/TodayHeader";
@@ -30,6 +31,7 @@ import { FoodNotesScreen } from "./src/components/FoodNotesScreen";
 import { InputPrompt } from "./src/components/ui/InputPrompt";
 import { AdminPasswordModal } from "./src/components/ui/AdminPasswordModal";
 import AdminScreen from "./src/components/AdminScreen";
+import HistoryScreen from "./src/components/HistoryScreen";
 
 // Styles
 import { globalStyles } from "./src/styles/globalStyles";
@@ -53,6 +55,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const nutritionData = useNutritionData();
   const todayData = nutritionData.getTodayData();
   const { saveData } = useLocalStorage();
+  const { addEntry } = useHistoryLog();
 
   // Use darkTheme when dark mode is enabled
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -147,6 +150,8 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
         nutritionData.updateTodayData({
           calories: Math.max(0, todayData.calories + amount),
         });
+        // Log to history
+        addEntry("calories", { calories: amount });
         triggerLightHaptic();
       }
     } else if (prompt.type === "protein") {
@@ -155,6 +160,8 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
         nutritionData.updateTodayData({
           protein: Math.max(0, todayData.protein + amount),
         });
+        // Log to history
+        addEntry("protein", { protein: amount });
         triggerLightHaptic();
       }
     }
@@ -227,6 +234,10 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
     setPrompt({ type: "admin-password" });
   };
 
+  const openHistory = () => {
+    navigation.navigate("History");
+  };
+
   const openSettings = () => {
     setSettingsVisible(true);
   };
@@ -242,6 +253,12 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
       nutritionData.updateTodayData({
         calories: todayData.calories + (item?.calories || 0),
         protein: todayData.protein + (item?.protein || 0),
+      });
+      // Log to history
+      addEntry("favourite", {
+        calories: item?.calories || 0,
+        protein: item?.protein || 0,
+        foodName: item?.name || "Unknown",
       });
       triggerLightHaptic();
     });
@@ -307,6 +324,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
             onClose={closeSettings}
             onToggleTheme={toggleTheme}
             onOpenCalendar={openCalendar}
+            onOpenHistory={openHistory}
             onOpenAdmin={openAdmin}
             isDarkMode={isDarkMode}
           />
@@ -420,6 +438,11 @@ export default function App() {
           <Stack.Screen
             name="Admin"
             component={AdminScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="History"
+            component={HistoryScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

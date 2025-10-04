@@ -159,7 +159,7 @@ export const FavouritesScreen = ({ navigation }) => {
     const proteinRaw = Math.max(0, (selectedItem.protein || 0) * m);
     const protein = Number(proteinRaw.toFixed(2));
     // Emit event so Home can update without leaving this screen
-    emit("add-from-favourites", { calories, protein });
+    emit("add-from-favourites", { name: selectedItem.name, calories, protein });
     Alert.alert(
       "Added",
       `${selectedItem.name} × ${formatDecimalWithComma(m)} added to today.`
@@ -543,7 +543,7 @@ export const FavouritesScreen = ({ navigation }) => {
               <View style={styles.itemTextWrap}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemMeta}>
-                  {item.calories} cal {" · "}
+                  {item.calories} kcal {" · "}
                   {formatDecimalWithComma(item.protein)}g protein
                 </Text>
               </View>
@@ -685,6 +685,7 @@ export const FavouritesScreen = ({ navigation }) => {
                     color: theme.text,
                     fontWeight: "700",
                     marginBottom: 6,
+                    textAlign: "center",
                   }}
                 >
                   {selectedItem.name}
@@ -696,7 +697,7 @@ export const FavouritesScreen = ({ navigation }) => {
                     textAlign: "center",
                   }}
                 >
-                  {selectedItem.calories} cal ·{" "}
+                  {selectedItem.calories} kcal ·{" "}
                   {formatDecimalWithComma(selectedItem.protein)}g protein
                 </Text>
 
@@ -753,12 +754,12 @@ export const FavouritesScreen = ({ navigation }) => {
                       <Text
                         style={{ color: theme.textSecondary, marginBottom: 4 }}
                       >
-                        {selectedItem.calories} cal,{" "}
+                        {selectedItem.calories} kcal,{" "}
                         {formatDecimalWithComma(selectedItem.protein)}g protein
                         × {formatDecimalWithComma(m)}
                       </Text>
                       <Text style={{ color: theme.text, fontWeight: "700" }}>
-                        = {calcCalories} cal,{" "}
+                        = {calcCalories} kcal,{" "}
                         {formatDecimalWithComma(Number(calcProtein.toFixed(2)))}
                         g protein
                       </Text>

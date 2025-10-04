@@ -112,6 +112,7 @@ export const SettingsModal = ({
   onClose,
   onToggleTheme,
   onOpenCalendar,
+  onOpenHistory,
   onOpenAdmin,
   isDarkMode,
 }) => {
@@ -142,6 +143,13 @@ export const SettingsModal = ({
 
   const handleCalendarOpen = () => {
     onOpenCalendar();
+    onClose();
+  };
+
+  const handleHistoryOpen = () => {
+    if (onOpenHistory) {
+      onOpenHistory();
+    }
     onClose();
   };
 
@@ -265,6 +273,37 @@ export const SettingsModal = ({
               </View>
               <Text style={[styles.settingText, { color: theme.text }]}>
                 Calendar
+              </Text>
+            </View>
+            <View style={styles.viewButton}>
+              <Text style={[styles.viewButtonText, { color: theme.text }]}>
+                View
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handleHistoryOpen}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <View
+                style={{ width: 24, marginRight: 12, alignItems: "center" }}
+              >
+                <AppSymbol
+                  name="clock.arrow.circlepath"
+                  size={20}
+                  color={theme.text}
+                  fallback={
+                    <Text style={[styles.settingIcon, { color: theme.text }]}>
+                      🕐
+                    </Text>
+                  }
+                />
+              </View>
+              <Text style={[styles.settingText, { color: theme.text }]}>
+                History
               </Text>
             </View>
             <View style={styles.viewButton}>
