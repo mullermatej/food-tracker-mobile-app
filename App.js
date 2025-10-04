@@ -11,10 +11,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Context and Themes
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import {
+  NutritionDataProvider,
+  useNutritionDataContext,
+} from "./src/context/NutritionDataContext";
 import { lightTheme, darkTheme } from "./src/utils/themes";
 
 // Hooks
-import { useNutritionData } from "./src/hooks/useNutritionData";
 import { useLocalStorage } from "./src/hooks/useLocalStorage";
 import { useHistoryLog } from "./src/hooks/useHistoryLog";
 
@@ -52,7 +55,7 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const [caloriesStr, setCaloriesStr] = useState("");
   const [proteinStr, setProteinStr] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
-  const nutritionData = useNutritionData();
+  const nutritionData = useNutritionDataContext();
   const todayData = nutritionData.getTodayData();
   const { saveData } = useLocalStorage();
   const { addEntry } = useHistoryLog();
@@ -387,66 +390,97 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <NavigationContainer
-        theme={{
-          ...(isDarkMode ? DarkTheme : DefaultTheme),
-          colors: {
-            ...((isDarkMode ? DarkTheme : DefaultTheme).colors || {}),
-            background: (isDarkMode ? darkTheme : lightTheme).background,
-            card: (isDarkMode ? darkTheme : lightTheme).background,
-            text: (isDarkMode ? darkTheme : lightTheme).text,
-            border: (isDarkMode ? darkTheme : lightTheme).border,
-            primary: (isDarkMode ? darkTheme : lightTheme).primary,
-          },
-        }}
-      >
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-              backgroundColor: (isDarkMode ? darkTheme : lightTheme).background,
+    <NutritionDataProvider>
+      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+        <NavigationContainer
+          theme={{
+            ...(isDarkMode ? DarkTheme : DefaultTheme),
+            colors: {
+              ...((isDarkMode ? DarkTheme : DefaultTheme).colors || {}),
+              background: (isDarkMode ? darkTheme : lightTheme).background,
+              card: (isDarkMode ? darkTheme : lightTheme).background,
+              text: (isDarkMode ? darkTheme : lightTheme).text,
+              border: (isDarkMode ? darkTheme : lightTheme).border,
+              primary: (isDarkMode ? darkTheme : lightTheme).primary,
             },
           }}
         >
-          <Stack.Screen name="Home">
-            {(props) => (
-              <HomeScreen
-                {...props}
-                isDarkMode={isDarkMode}
-                setIsDarkMode={setIsDarkMode}
-              />
-            )}
-          </Stack.Screen>
-          <Stack.Screen
-            name="Favourites"
-            component={FavouritesScreen}
-            options={{
+          <Stack.Navigator
+            screenOptions={{
               headerShown: false,
+              contentStyle: {
+                backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                  .background,
+              },
             }}
-          />
-          <Stack.Screen
-            name="FoodNotes"
-            component={FoodNotesScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Calendar"
-            component={CalendarScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Admin"
-            component={AdminScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="History"
-            component={HistoryScreen}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ThemeProvider>
+          >
+            <Stack.Screen name="Home">
+              {(props) => (
+                <HomeScreen
+                  {...props}
+                  isDarkMode={isDarkMode}
+                  setIsDarkMode={setIsDarkMode}
+                />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="Favourites"
+              component={FavouritesScreen}
+              options={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                    .background,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="FoodNotes"
+              component={FoodNotesScreen}
+              options={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                    .background,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Calendar"
+              component={CalendarScreen}
+              options={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                    .background,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Admin"
+              component={AdminScreen}
+              options={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                    .background,
+                },
+              }}
+            />
+            <Stack.Screen
+              name="History"
+              component={HistoryScreen}
+              options={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                    .background,
+                },
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
+    </NutritionDataProvider>
   );
 }

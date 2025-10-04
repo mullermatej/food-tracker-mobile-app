@@ -26,7 +26,7 @@ import {
   startOfDay,
 } from "date-fns";
 import { useTheme } from "../context/ThemeContext";
-import { useNutritionData } from "../hooks/useNutritionData";
+import { useNutritionDataContext } from "../context/NutritionDataContext";
 import { calendarStyles } from "../styles/calendarStyles";
 import {
   formatDecimalWithComma,
@@ -35,7 +35,7 @@ import {
 
 export const CalendarScreen = ({ navigation }) => {
   const theme = useTheme();
-  const nutritionData = useNutritionData();
+  const nutritionData = useNutritionDataContext();
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
