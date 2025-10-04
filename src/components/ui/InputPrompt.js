@@ -84,10 +84,7 @@ export const InputPrompt = ({
       animationType="fade"
       onRequestClose={onCancel}
     >
-      <KeyboardAvoidingView
-        style={styles.overlay}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={styles.overlay}>
         <Pressable
           style={{
             position: "absolute",
@@ -110,7 +107,6 @@ export const InputPrompt = ({
             keyboardType={keyboardType}
             style={styles.input}
             autoFocus
-            returnKeyType="done"
             onSubmitEditing={onSubmit}
           />
           <View style={styles.actions}>

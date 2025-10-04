@@ -216,13 +216,12 @@ export const FavouritesScreen = ({ navigation }) => {
       justifyContent: "space-between",
     },
     backHit: {
-      width: 40,
-      height: 40,
+      width: 32,
+      height: 32,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 22,
       backgroundColor: theme.cardBackground,
-      borderWidth: 1,
       borderColor: theme.border,
       shadowColor: theme.shadow,
       shadowOffset: { width: 0, height: 2 },
@@ -230,7 +229,7 @@ export const FavouritesScreen = ({ navigation }) => {
       shadowRadius: 4,
       elevation: 3,
     },
-    backText: { fontSize: 19, fontWeight: "700", color: theme.text },
+    backText: { fontSize: 19, color: theme.textSecondary },
     title: {
       fontSize: 20,
       fontWeight: "700",
@@ -474,6 +473,24 @@ export const FavouritesScreen = ({ navigation }) => {
           <Text style={styles.title}>Favourites</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity
+              style={[styles.iconButton, { marginRight: 12 }]}
+              onPress={() => setSortVisible(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Sort favourites"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <AppSymbol
+                name="arrow.up.arrow.down"
+                size={24}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 16, color: theme.textSecondary }}>
+                    ↕️
+                  </Text>
+                }
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.iconButton}
               onPress={openAddModal}
               accessibilityRole="button"
@@ -487,24 +504,6 @@ export const FavouritesScreen = ({ navigation }) => {
                 fallback={
                   <Text style={{ fontSize: 18, color: theme.textSecondary }}>
                     +
-                  </Text>
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.iconButton, { marginLeft: 8 }]}
-              onPress={() => setSortVisible(true)}
-              accessibilityRole="button"
-              accessibilityLabel="Sort favourites"
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <AppSymbol
-                name="arrow.up.arrow.down"
-                size={24}
-                color={theme.textSecondary}
-                fallback={
-                  <Text style={{ fontSize: 16, color: theme.textSecondary }}>
-                    ↕️
                   </Text>
                 }
               />

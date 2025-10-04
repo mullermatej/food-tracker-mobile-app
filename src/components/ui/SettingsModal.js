@@ -73,8 +73,7 @@ const styles = {
   },
   viewButtonText: {
     fontSize: 14,
-    fontWeight: "500",
-    marginRight: 4,
+    fontWeight: "600",
   },
   viewButtonArrow: {
     fontSize: 12,
@@ -263,11 +262,6 @@ export const SettingsModal = ({
             <View style={styles.viewButton}>
               <Text style={[styles.viewButtonText, { color: theme.text }]}>
                 View
-              </Text>
-              <Text
-                style={[styles.viewButtonArrow, { color: theme.textSecondary }]}
-              >
-                →
               </Text>
             </View>
           </TouchableOpacity>

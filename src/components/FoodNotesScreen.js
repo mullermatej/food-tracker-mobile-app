@@ -74,23 +74,33 @@ export const FoodNotesScreen = ({ navigation }) => {
       alignItems: "center",
       justifyContent: "space-between",
     },
+    sideLeft: {
+      width: 72,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-start",
+    },
+    sideRight: {
+      width: 72,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+    },
     backHit: {
-      width: 40,
-      height: 40,
+      width: 32,
+      height: 32,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 22,
       backgroundColor: theme.cardBackground,
-      borderWidth: 1,
       borderColor: theme.border,
-      // subtle shadow/glow
       shadowColor: theme.shadow,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.15,
       shadowRadius: 4,
       elevation: 3,
     },
-    backText: { fontSize: 19, fontWeight: "700", color: theme.text },
+    backText: { fontSize: 19, color: theme.textSecondary },
     title: {
       fontSize: 20,
       fontWeight: "700",
@@ -140,21 +150,23 @@ export const FoodNotesScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.backHit,
-            pressed && { backgroundColor: theme.primary + "10" },
-          ]}
-          onPress={() => navigation.goBack()}
-          android_ripple={{ color: theme.primary + "20", borderless: false }}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <Text style={styles.backText}>←</Text>
-        </Pressable>
+        <View style={styles.sideLeft}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.backHit,
+              pressed && { backgroundColor: theme.primary + "10" },
+            ]}
+            onPress={() => navigation.goBack()}
+            android_ripple={{ color: theme.primary + "20", borderless: false }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+          >
+            <Text style={styles.backText}>←</Text>
+          </Pressable>
+        </View>
         <Text style={styles.title}>Food Notes</Text>
-        <View style={{ width: 44 }} />
+        <View style={styles.sideRight} />
       </View>
       <KeyboardAvoidingView
         style={styles.content}

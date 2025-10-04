@@ -319,13 +319,12 @@ export const CalendarScreen = ({ navigation }) => {
       justifyContent: "space-between",
     },
     backHit: {
-      width: 40,
-      height: 40,
+      width: 32,
+      height: 32,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 22,
       backgroundColor: theme.cardBackground,
-      borderWidth: 1,
       borderColor: theme.border,
     },
     title: {
@@ -342,8 +341,8 @@ export const CalendarScreen = ({ navigation }) => {
       alignItems: "center",
       justifyContent: "flex-end",
     },
-    editLink: { color: theme.primary, fontWeight: "700", fontSize: 16 },
-    backText: { fontSize: 19, fontWeight: "700", color: theme.text },
+    editLink: { color: theme.primary, fontSize: 16 },
+    backText: { fontSize: 19, color: theme.textSecondary },
   };
 
   const editStyles = {
@@ -435,7 +434,7 @@ export const CalendarScreen = ({ navigation }) => {
               onPress={() => navigation.goBack()}
               style={headerStyles.backHit}
             >
-              <Text style={headerStyles.backText}>{"‹"}</Text>
+              <Text style={headerStyles.backText}>←</Text>
             </TouchableOpacity>
           </View>
           <Text style={headerStyles.title}>Calendar</Text>
