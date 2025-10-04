@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, Animated, Easing, Platform } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Animated,
+  Easing,
+  Platform,
+  View,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   NavigationContainer,
@@ -384,6 +392,13 @@ export default function App() {
     loadThemePreference();
   }, [loadData]);
 
+  // Keep native root background synced to avoid white flashes on iOS when system overlays appear
+  // Note: This hook must be declared before any conditional returns to preserve hook order
+  useEffect(() => {
+    const bg = (isDarkMode ? darkTheme : lightTheme).background;
+    SystemUI.setBackgroundColorAsync(bg).catch(() => {});
+  }, [isDarkMode, themeLoaded]);
+
   // Don't render until theme preference is loaded
   if (!themeLoaded) {
     return null;
@@ -392,94 +407,101 @@ export default function App() {
   return (
     <NutritionDataProvider>
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-        <NavigationContainer
-          theme={{
-            ...(isDarkMode ? DarkTheme : DefaultTheme),
-            colors: {
-              ...((isDarkMode ? DarkTheme : DefaultTheme).colors || {}),
-              background: (isDarkMode ? darkTheme : lightTheme).background,
-              card: (isDarkMode ? darkTheme : lightTheme).background,
-              text: (isDarkMode ? darkTheme : lightTheme).text,
-              border: (isDarkMode ? darkTheme : lightTheme).border,
-              primary: (isDarkMode ? darkTheme : lightTheme).primary,
-            },
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: (isDarkMode ? darkTheme : lightTheme).background,
           }}
         >
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-              contentStyle: {
-                backgroundColor: (isDarkMode ? darkTheme : lightTheme)
-                  .background,
+          <NavigationContainer
+            theme={{
+              ...(isDarkMode ? DarkTheme : DefaultTheme),
+              colors: {
+                ...((isDarkMode ? DarkTheme : DefaultTheme).colors || {}),
+                background: (isDarkMode ? darkTheme : lightTheme).background,
+                card: (isDarkMode ? darkTheme : lightTheme).background,
+                text: (isDarkMode ? darkTheme : lightTheme).text,
+                border: (isDarkMode ? darkTheme : lightTheme).border,
+                primary: (isDarkMode ? darkTheme : lightTheme).primary,
               },
             }}
           >
-            <Stack.Screen name="Home">
-              {(props) => (
-                <HomeScreen
-                  {...props}
-                  isDarkMode={isDarkMode}
-                  setIsDarkMode={setIsDarkMode}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="Favourites"
-              component={FavouritesScreen}
-              options={{
+            <Stack.Navigator
+              screenOptions={{
                 headerShown: false,
                 contentStyle: {
                   backgroundColor: (isDarkMode ? darkTheme : lightTheme)
                     .background,
                 },
               }}
-            />
-            <Stack.Screen
-              name="FoodNotes"
-              component={FoodNotesScreen}
-              options={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
-                    .background,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="Calendar"
-              component={CalendarScreen}
-              options={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
-                    .background,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="Admin"
-              component={AdminScreen}
-              options={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
-                    .background,
-                },
-              }}
-            />
-            <Stack.Screen
-              name="History"
-              component={HistoryScreen}
-              options={{
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor: (isDarkMode ? darkTheme : lightTheme)
-                    .background,
-                },
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+            >
+              <Stack.Screen name="Home">
+                {(props) => (
+                  <HomeScreen
+                    {...props}
+                    isDarkMode={isDarkMode}
+                    setIsDarkMode={setIsDarkMode}
+                  />
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Favourites"
+                component={FavouritesScreen}
+                options={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                      .background,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="FoodNotes"
+                component={FoodNotesScreen}
+                options={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                      .background,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="Calendar"
+                component={CalendarScreen}
+                options={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                      .background,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="Admin"
+                component={AdminScreen}
+                options={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                      .background,
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="History"
+                component={HistoryScreen}
+                options={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: (isDarkMode ? darkTheme : lightTheme)
+                      .background,
+                  },
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
       </ThemeProvider>
     </NutritionDataProvider>
   );
