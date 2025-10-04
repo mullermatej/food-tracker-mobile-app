@@ -96,10 +96,32 @@ export const useHistoryLog = () => {
     }
   };
 
+  /**
+   * Check if the day has changed and clear history if so
+   * Stores the last active date and compares it with today
+   */
+  const checkAndClearIfNewDay = async () => {
+    try {
+      const today = format(new Date(), "yyyy-MM-dd");
+      const lastDate = await loadData("lastActiveDate");
+
+      if (lastDate && lastDate !== today) {
+        // Day has changed - clear history
+        await clearHistory();
+      }
+
+      // Update last active date to today
+      await saveData("lastActiveDate", today);
+    } catch (error) {
+      console.error("Failed to check day change:", error);
+    }
+  };
+
   return {
     addEntry,
     getHistory,
     getEntriesForDate,
     clearHistory,
+    checkAndClearIfNewDay,
   };
 };

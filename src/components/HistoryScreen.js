@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
+import AppSymbol from "./ui/AppSymbol";
 import { useHistoryLog } from "../hooks/useHistoryLog";
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { formatDecimalWithComma } from "../utils/numberFormat";
@@ -47,16 +48,17 @@ export const HistoryScreen = ({ navigation }) => {
     return format(parseISO(timestamp), "HH:mm");
   };
 
-  const getEntryIcon = (type) => {
+  const getEntrySymbol = (type) => {
+    // Map entry type to SF Symbol name and emoji fallback
     switch (type) {
       case "calories":
-        return "🔥";
+        return { name: "flame.fill", emoji: "🔥" };
       case "protein":
-        return "💪";
+        return { name: "bolt.fill", emoji: "💪" };
       case "favourite":
-        return "⭐";
+        return { name: "star.fill", emoji: "⭐" };
       default:
-        return "📝";
+        return { name: "note.text", emoji: "📝" };
     }
   };
 
@@ -150,11 +152,16 @@ export const HistoryScreen = ({ navigation }) => {
       flexDirection: "row",
       alignItems: "flex-start",
     },
-    entryIcon: {
-      fontSize: 24,
+    entryIconWrap: {
       marginRight: 12,
       width: 32,
-      textAlign: "center",
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 5,
+    },
+    entryIconEmoji: {
+      fontSize: 22,
+      color: theme.text,
     },
     entryContent: {
       flex: 1,
@@ -256,9 +263,21 @@ export const HistoryScreen = ({ navigation }) => {
                 </Text>
                 {sortedEntries.map((entry) => (
                   <View key={entry.id} style={styles.entryCard}>
-                    <Text style={styles.entryIcon}>
-                      {getEntryIcon(entry.type)}
-                    </Text>
+                    <View style={styles.entryIconWrap}>
+                      {(() => {
+                        const { name, emoji } = getEntrySymbol(entry.type);
+                        return (
+                          <AppSymbol
+                            name={name}
+                            size={20}
+                            color={theme.text}
+                            fallback={
+                              <Text style={styles.entryIconEmoji}>{emoji}</Text>
+                            }
+                          />
+                        );
+                      })()}
+                    </View>
                     <View style={styles.entryContent}>
                       <Text style={styles.entryDescription}>
                         {getEntryDescription(entry)}

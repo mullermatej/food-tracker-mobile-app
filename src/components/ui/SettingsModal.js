@@ -63,21 +63,6 @@ const styles = {
     shadowRadius: 3,
     elevation: 5,
   },
-  viewButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: "rgba(128, 128, 128, 0.1)",
-  },
-  viewButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  viewButtonArrow: {
-    fontSize: 12,
-  },
   settingItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -275,10 +260,17 @@ export const SettingsModal = ({
                 Calendar
               </Text>
             </View>
-            <View style={styles.viewButton}>
-              <Text style={[styles.viewButtonText, { color: theme.text }]}>
-                View
-              </Text>
+            <View style={{ width: 24, alignItems: "center" }}>
+              <AppSymbol
+                name="chevron.right"
+                size={16}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 18, color: theme.textSecondary }}>
+                    ›
+                  </Text>
+                }
+              />
             </View>
           </TouchableOpacity>
 
@@ -306,10 +298,17 @@ export const SettingsModal = ({
                 History
               </Text>
             </View>
-            <View style={styles.viewButton}>
-              <Text style={[styles.viewButtonText, { color: theme.text }]}>
-                View
-              </Text>
+            <View style={{ width: 24, alignItems: "center" }}>
+              <AppSymbol
+                name="chevron.right"
+                size={16}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 18, color: theme.textSecondary }}>
+                    ›
+                  </Text>
+                }
+              />
             </View>
           </TouchableOpacity>
 
@@ -337,10 +336,17 @@ export const SettingsModal = ({
                 Admin
               </Text>
             </View>
-            <View style={styles.viewButton}>
-              <Text style={[styles.viewButtonText, { color: theme.text }]}>
-                Open
-              </Text>
+            <View style={{ width: 24, alignItems: "center" }}>
+              <AppSymbol
+                name="chevron.right"
+                size={16}
+                color={theme.textSecondary}
+                fallback={
+                  <Text style={{ fontSize: 18, color: theme.textSecondary }}>
+                    ›
+                  </Text>
+                }
+              />
             </View>
           </TouchableOpacity>
         </View>

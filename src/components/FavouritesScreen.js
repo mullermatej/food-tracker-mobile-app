@@ -52,6 +52,7 @@ const DUMMY_FAVOURITES = [
 export const FavouritesScreen = ({ navigation }) => {
   const theme = useTheme();
   const listRef = useRef(null);
+  const nameInputRef = useRef(null);
   const [favourites, setFavourites] = useState(DUMMY_FAVOURITES);
   const [sortVisible, setSortVisible] = useState(false);
   const [sortMode, setSortMode] = useState("recent"); // 'recent' | 'alpha'
@@ -167,7 +168,13 @@ export const FavouritesScreen = ({ navigation }) => {
     closeMultiplyModal();
   };
 
-  const openAddModal = () => setIsAddOpen(true);
+  const openAddModal = () => {
+    setIsAddOpen(true);
+    // Focus the name input after modal animation
+    setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 100);
+  };
   const closeAddModal = () => {
     setIsAddOpen(false);
     setNewName("");
@@ -612,11 +619,12 @@ export const FavouritesScreen = ({ navigation }) => {
         transparent
         onRequestClose={closeAddModal}
       >
-        <View style={styles.addModalOverlay}>
+        <View style={[styles.addModalOverlay, { marginBottom: 100 }]}>
           <Pressable style={styles.overlayDismiss} onPress={closeAddModal} />
           <View style={styles.addModalCard}>
             <Text style={styles.modalTitle}>New favourite</Text>
             <TextInput
+              ref={nameInputRef}
               placeholder="Name (e.g., Apple)"
               placeholderTextColor={theme.textSecondary}
               value={newName}

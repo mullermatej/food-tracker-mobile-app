@@ -66,10 +66,15 @@ function HomeScreen({ navigation, route, isDarkMode, setIsDarkMode }) {
   const nutritionData = useNutritionDataContext();
   const todayData = nutritionData.getTodayData();
   const { saveData } = useLocalStorage();
-  const { addEntry } = useHistoryLog();
+  const { addEntry, checkAndClearIfNewDay } = useHistoryLog();
 
   // Use darkTheme when dark mode is enabled
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  // Check if day has changed and clear history if so
+  useEffect(() => {
+    checkAndClearIfNewDay();
+  }, []);
 
   // Animated background cross-fade between dark and light backgrounds
   const bgAnim = useRef(new Animated.Value(isDarkMode ? 0 : 1)).current; // 0 = dark, 1 = light
